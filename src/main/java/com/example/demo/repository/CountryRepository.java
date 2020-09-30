@@ -19,13 +19,6 @@ public interface CountryRepository extends CrudRepository<Country, Integer> {
     @Query(value = "SELECT c FROM Country c where id=?1")
     Country findById(int id);
 
-    /*
-    @Transactional
-    @Modifying
-    @Query(value = ???)
-    Country save(Country newCountry);
-    */
-
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM Country where id=?1")
