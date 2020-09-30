@@ -1,14 +1,13 @@
-package com.example.demo;
+package com.example.demo.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Country")
 public class Country {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String iso;
     private String description;
@@ -55,6 +54,6 @@ public class Country {
 
     @Override
     public String toString() {
-        return "Country: ["+id+", "+prefix+", "+description+"]";
+        return "Country: [" + id + ", " + prefix + ", " + description + "]";
     }
 }
