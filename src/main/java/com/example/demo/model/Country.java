@@ -10,8 +10,14 @@ public class Country {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "country_id_seq")
     @SequenceGenerator(schema = "public", name = "country_id_seq", sequenceName = "country_id_seq", allocationSize = 1)
     private int id;
+
+    @Column(name = "iso")
     private String iso;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "prefix")
     private String prefix;
 
     public Country() {
