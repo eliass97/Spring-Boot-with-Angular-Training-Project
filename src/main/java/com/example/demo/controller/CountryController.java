@@ -23,12 +23,12 @@ public class CountryController {
     }
 
     @PostMapping("/country")
-    public Country postCountry(@RequestBody Country newCountry) {
+    public Country createCountry(@RequestBody Country newCountry) {
         return service.createCountry(newCountry);
     }
 
     @PutMapping("/country/{id}")
-    public Country putCountry(@RequestBody Country newCountry, @PathVariable int id) {
+    public Country updateCountry(@RequestBody Country newCountry, @PathVariable int id) {
         return service.updateCountry(newCountry, id);
     }
 
