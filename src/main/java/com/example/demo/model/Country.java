@@ -13,6 +13,10 @@ public class Country {
     private String description;
     private String prefix;
 
+    public Country() {
+
+    }
+
     public Country(int id, String iso, String description, String prefix) {
         this.id = id;
         this.iso = iso;

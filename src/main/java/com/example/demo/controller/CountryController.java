@@ -8,20 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
-public class Controller {
+public class CountryController {
 
     @Autowired
     CountryService service;
 
     @GetMapping("/country")
-    public List<Country> getAllCountries() {
-        List<Country> countryList = new ArrayList<>();
-        countryList.add(new Country(-1, "s", "s", "s"));
-        return countryList;
+    public Iterable<Country> getAllCountries() {
+        return service.findAll();
     }
 
     @GetMapping("/country/{id}")

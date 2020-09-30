@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CountryRepository extends CrudRepository<Country, Integer> {
 
-    @Query(value = "SELECT * FROM Country where id=?1")
+    @Query(value = "SELECT c FROM Country c where id=?1")
     Country findById(int id);
 }
