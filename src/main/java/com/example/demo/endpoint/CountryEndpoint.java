@@ -59,11 +59,12 @@ public class CountryEndpoint {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteCountry(@PathVariable int id) {
+    public ResponseEntity<Void> deleteCountry(@PathVariable int id) {
         Country deletedCountry = CountryService.findById(id);
         if (CountryService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        CountryService.deleteCountry(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
