@@ -28,13 +28,7 @@ public class CountryService {
         return CountryRepository.save(newCountry);
     }
 
-    public Country updateCountry(Country newCountry, int id) {
-        if (CountryRepository.findById(id).isEmpty()) {
-            return null;
-        }
-        if(newCountry.getId() != id) {
-            return null;
-        }
+    public Country updateCountry(int id, Country newCountry) {
         newCountry.setId(id);
         return CountryRepository.save(newCountry);
     }
