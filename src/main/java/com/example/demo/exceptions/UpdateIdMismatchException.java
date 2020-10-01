@@ -1,6 +1,8 @@
 package com.example.demo.exceptions;
 
-public class UpdateIdMismatchException extends Exception {
+import org.springframework.http.HttpStatus;
+
+public class UpdateIdMismatchException extends SuperException {
 
     public UpdateIdMismatchException() {
         super();
@@ -10,11 +12,15 @@ public class UpdateIdMismatchException extends Exception {
         super(message);
     }
 
-    public UpdateIdMismatchException(Throwable cause) {
-        super(cause);
+    public UpdateIdMismatchException(HttpStatus status) {
+        super(status);
     }
 
-    public UpdateIdMismatchException(String message, Throwable cause) {
-        super(message, cause);
+    public UpdateIdMismatchException(HttpStatus status, String message) {
+        super(status, message);
+    }
+
+    public UpdateIdMismatchException(HttpStatus status, String message, String errorCode, String error) {
+        super(status, message, errorCode, error);
     }
 }

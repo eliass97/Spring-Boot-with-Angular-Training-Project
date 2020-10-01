@@ -2,6 +2,7 @@ package com.example.demo.endpoint;
 
 import com.example.demo.exceptions.ExceptionForm;
 import com.example.demo.exceptions.ResourceNotFoundException;
+import com.example.demo.exceptions.SuperException;
 import com.example.demo.exceptions.UpdateIdMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,27 +15,15 @@ import java.sql.Timestamp;
 @RestControllerAdvice
 public class EndpointExceptionHandlers {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler({ResourceNotFoundException.class, UpdateIdMismatchException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ExceptionForm handleNotFoundException(ResourceNotFoundException ex, HttpServletRequest request) {
+    public ExceptionForm CommonExceptionHandler(SuperException exception, HttpServletRequest request) {
         return new ExceptionForm(new Timestamp(System.currentTimeMillis()),
-                HttpStatus.NOT_FOUND,
-                "RESOURCE_NOT_FOUND",
-                "Not Found",
-                ResourceNotFoundException.class.getCanonicalName(),
-                ex.getMessage(),
-                request.getServletPath());
-    }
-
-    @ExceptionHandler(UpdateIdMismatchException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionForm handleIdMismatchException(UpdateIdMismatchException ex, HttpServletRequest request) {
-        return new ExceptionForm(new Timestamp(System.currentTimeMillis()),
-                HttpStatus.BAD_REQUEST,
-                "ID_MISMATCH",
-                "Bad Request",
-                UpdateIdMismatchException.class.getCanonicalName(),
-                ex.getMessage(),
+                exception.getStatus(),
+                exception.getErrorCode(),
+                exception.getError(),
+                exception.getClass().getCanonicalName(),
+                exception.getMessage(),
                 request.getServletPath());
     }
 }

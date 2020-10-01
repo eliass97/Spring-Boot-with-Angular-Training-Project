@@ -1,6 +1,8 @@
 package com.example.demo.exceptions;
 
-public class ResourceNotFoundException extends Exception {
+import org.springframework.http.HttpStatus;
+
+public class ResourceNotFoundException extends SuperException {
 
     public ResourceNotFoundException() {
         super();
@@ -10,11 +12,15 @@ public class ResourceNotFoundException extends Exception {
         super(message);
     }
 
-    public ResourceNotFoundException(Throwable cause) {
-        super(cause);
+    public ResourceNotFoundException(HttpStatus status) {
+        super(status);
     }
 
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public ResourceNotFoundException(HttpStatus status, String message) {
+        super(status, message);
+    }
+
+    public ResourceNotFoundException(HttpStatus status, String message, String errorCode, String error) {
+        super(status, message, errorCode, error);
     }
 }
