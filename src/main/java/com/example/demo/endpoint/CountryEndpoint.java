@@ -51,16 +51,4 @@ public class CountryEndpoint {
         CountryService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Country not found")
-    @ExceptionHandler(CountryNotFoundException.class)
-    public void handleNotFoundException() {
-
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Mismatch between parameter and body id")
-    @ExceptionHandler(UpdateIdMismatchException.class)
-    public void handleIdMismatchException() {
-
-    }
 }
