@@ -1,11 +1,9 @@
 package com.example.demo.endpoint;
 
-import com.example.demo.exceptions.ResourceNotFoundException;
-import com.example.demo.exceptions.UpdateIdMismatchException;
+import com.example.demo.exceptions.DemoException;
 import com.example.demo.model.Country;
 import com.example.demo.service.CountryService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,34 +19,29 @@ public class CountryEndpoint {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Country>> getAllCountries() {
-        List<Country> result = (List<Country>) CountryService.findAll();
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public Iterable<Country> getAllCountries() {
+        return (List<Country>) CountryService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Country> getCountryById(@PathVariable("id") int id) throws ResourceNotFoundException {
-        Country result;
-        result = CountryService.findById(id);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public Country getCountryById(@PathVariable("id") int id) throws DemoException {
+        return CountryService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<Country> createCountry(@RequestBody Country newCountry) {
-        Country result = CountryService.create(newCountry);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Country createCountry(@RequestBody Country newCountry) {
+        return CountryService.create(newCountry);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Country> updateCountry(@PathVariable int id, @RequestBody Country newCountry) throws ResourceNotFoundException, UpdateIdMismatchException {
-        Country result;
-        result = CountryService.update(id, newCountry);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+    public Country updateCountry(@PathVariable int id, @RequestBody Country newCountry) throws DemoException {
+        return CountryService.update(id, newCountry);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCountry(@PathVariable int id) throws ResourceNotFoundException {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCountry(@PathVariable int id) throws DemoException {
         CountryService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
