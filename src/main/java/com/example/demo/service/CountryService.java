@@ -5,8 +5,6 @@ import com.example.demo.repository.CountryRepository;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class CountryService {
 
@@ -21,23 +19,19 @@ public class CountryService {
     }
 
     public Country findById(int id) {
-        Optional<Country> result = CountryRepository.findById(id);
-        return (Country) result.orElse(null);
+        return CountryRepository.findById(id).orElse(null);
     }
 
-    public Country createCountry(Country newCountry) {
-        if(newCountry.getIso() == null || newCountry.getDescription() == null || newCountry.getPrefix() == null) {
-            return null;
-        }
+    public Country create(Country newCountry) {
         return CountryRepository.save(newCountry);
     }
 
-    public Country updateCountry(int id, Country newCountry) {
+    public Country update(int id, Country newCountry) {
         newCountry.setId(id);
         return CountryRepository.save(newCountry);
     }
 
-    public void deleteCountry(int id) {
+    public void delete(int id) {
         CountryRepository.deleteById(id);
     }
 }

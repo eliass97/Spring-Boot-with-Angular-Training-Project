@@ -21,28 +21,25 @@ public class CountryEndpoint {
 
     @GetMapping
     public ResponseEntity<Iterable<Country>> getAllCountries() {
-        List<Country> countryList = (List<Country>) CountryService.findAll();
-        if (countryList.isEmpty()) {
+        List<Country> result = (List<Country>) CountryService.findAll();
+        if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(countryList, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Country> getCountryById(@PathVariable("id") int id) {
-        Country foundCountry = CountryService.findById(id);
-        if (foundCountry == null) {
+        Country result = CountryService.findById(id);
+        if (result == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(foundCountry, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Country> createCountry(@RequestBody Country newCountry) {
-        Country result = CountryService.createCountry(newCountry);
-        if(result == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Country result = CountryService.create(newCountry);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
@@ -54,7 +51,7 @@ public class CountryEndpoint {
         if (CountryService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Country result = CountryService.updateCountry(id, newCountry);
+        Country result = CountryService.update(id, newCountry);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -64,7 +61,7 @@ public class CountryEndpoint {
         if (CountryService.findById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        CountryService.deleteCountry(id);
+        CountryService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
