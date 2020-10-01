@@ -7,7 +7,6 @@ import com.example.demo.service.CountryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,14 +27,9 @@ public class CountryEndpoint {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Country> getCountryById(@PathVariable("id") int id) {
+    public ResponseEntity<Country> getCountryById(@PathVariable("id") int id) throws CountryNotFoundException {
         Country result;
-        try {
-            result = CountryService.findById(id);
-        } catch (CountryNotFoundException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Country not found", e);
-        }
+        result = CountryService.findById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -46,38 +40,27 @@ public class CountryEndpoint {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Country> updateCountry(@PathVariable int id, @RequestBody Country newCountry) {
+    public ResponseEntity<Country> updateCountry(@PathVariable int id, @RequestBody Country newCountry) throws CountryNotFoundException, UpdateIdMismatchException {
         Country result;
-        try {
-            result = CountryService.update(id, newCountry);
-        } catch (CountryNotFoundException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Country Not Found", e);
-        } catch (UpdateIdMismatchException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Bad Request Body", e);
-        }
+        result = CountryService.update(id, newCountry);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCountry(@PathVariable int id) {
-        try {
-            CountryService.delete(id);
-        } catch (CountryNotFoundException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Country not found", e);
-        }
+    public ResponseEntity<Void> deleteCountry(@PathVariable int id) throws CountryNotFoundException {
+        CountryService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    /*@ExceptionHandler(CountryNotFoundException.class)
-    public void handleNotFoundException(){
+    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Country not found")
+    @ExceptionHandler(CountryNotFoundException.class)
+    public void handleNotFoundException() {
 
     }
 
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Mismatch between parameter and body id")
     @ExceptionHandler(UpdateIdMismatchException.class)
-    public void handleIdMismatchException(){
+    public void handleIdMismatchException() {
 
-    }*/
+    }
 }
