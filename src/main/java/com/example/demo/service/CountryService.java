@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exceptions.CountryNotFoundException;
+import com.example.demo.exceptions.ResourceNotFoundException;
 import com.example.demo.exceptions.UpdateIdMismatchException;
 import com.example.demo.model.Country;
 import com.example.demo.repository.CountryRepository;
@@ -21,10 +21,10 @@ public class CountryService {
         return CountryRepository.findAll();
     }
 
-    public Country findById(int id) throws CountryNotFoundException {
+    public Country findById(int id) throws ResourceNotFoundException {
         Optional<Country> result = CountryRepository.findById(id);
         if (result.isEmpty()) {
-            throw new CountryNotFoundException();
+            throw new ResourceNotFoundException("Country ID not found in database");
         }
         return result.get();
     }
@@ -33,16 +33,16 @@ public class CountryService {
         return CountryRepository.save(newCountry);
     }
 
-    public Country update(int id, Country newCountry) throws UpdateIdMismatchException, CountryNotFoundException {
+    public Country update(int id, Country newCountry) throws UpdateIdMismatchException, ResourceNotFoundException {
         if (newCountry.getId() != id && newCountry.getId() != 0) {
-            throw new UpdateIdMismatchException();
+            throw new UpdateIdMismatchException("Path ID variable does not match with body ID");
         }
         findById(id);
         newCountry.setId(id);
         return CountryRepository.save(newCountry);
     }
 
-    public void delete(int id) throws CountryNotFoundException {
+    public void delete(int id) throws ResourceNotFoundException {
         findById(id);
         CountryRepository.deleteById(id);
     }
