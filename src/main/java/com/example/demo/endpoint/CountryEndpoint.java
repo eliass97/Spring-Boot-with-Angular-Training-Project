@@ -3,6 +3,8 @@ package com.example.demo.endpoint;
 import com.example.demo.model.Country;
 import com.example.demo.service.CountryService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,50 +20,50 @@ public class CountryEndpoint {
     }
 
     @GetMapping
-    public Iterable<Country> getAllCountries() {
+    public ResponseEntity<Iterable<Country>> getAllCountries() {
         List<Country> countryList = (List<Country>) CountryService.findAll();
         if (countryList.isEmpty()) {
-            countryList.add(new Country(-1, "UNK", "Country not found", "UNK")); //404 not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return countryList;
+        return new ResponseEntity<>(countryList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Country getCountryById(@PathVariable("id") int id) {
+    public ResponseEntity<Country> getCountryById(@PathVariable("id") int id) {
         Country foundCountry = CountryService.findById(id);
         if (foundCountry == null) {
-            return new Country(-1, "UNK", "Country not found", "UNK"); //404 not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return foundCountry;
+        return new ResponseEntity<>(foundCountry, HttpStatus.OK);
     }
 
     @PostMapping
-    public Country createCountry(@RequestBody Country newCountry) {
+    public ResponseEntity<Country> createCountry(@RequestBody Country newCountry) {
         Country result = CountryService.createCountry(newCountry);
         if(result == null) {
-            return null; //400
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return result;
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public Country updateCountry(@PathVariable int id, @RequestBody Country newCountry) {
+    public ResponseEntity<Country> updateCountry(@PathVariable int id, @RequestBody Country newCountry) {
         if (newCountry.getId() != id && newCountry.getId() != 0) {
-            return new Country(-1, "UNK", "The IDs don't match", "UNK"); //400 no id match
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (CountryService.findById(id) == null) {
-            return new Country(-1, "UNK", "Country not found", "UNK"); //404 not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return CountryService.updateCountry(id, newCountry);
+        Country result = CountryService.updateCountry(id, newCountry);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public Country deleteCountry(@PathVariable int id) {
+    public ResponseEntity deleteCountry(@PathVariable int id) {
         Country deletedCountry = CountryService.findById(id);
         if (CountryService.findById(id) == null) {
-            return new Country(-1, "UNK", "Country not found", "UNK"); //404 not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        CountryService.deleteCountry(id);
-        return deletedCountry;
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -26,7 +26,7 @@ public class CountryService {
     }
 
     public Country createCountry(Country newCountry) {
-        if(NonAcceptableBody(newCountry)) {
+        if(newCountry.getIso() == null || newCountry.getDescription() == null || newCountry.getPrefix() == null) {
             return null;
         }
         return CountryRepository.save(newCountry);
@@ -39,9 +39,5 @@ public class CountryService {
 
     public void deleteCountry(int id) {
         CountryRepository.deleteById(id);
-    }
-
-    public boolean NonAcceptableBody(Country newCountry) {
-        return newCountry.getIso() == null || newCountry.getDescription() == null || newCountry.getPrefix() == null;
     }
 }
