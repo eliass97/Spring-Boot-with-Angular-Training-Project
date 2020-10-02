@@ -1,5 +1,7 @@
 package com.example.demo.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 
 import java.sql.Timestamp;
@@ -7,7 +9,10 @@ import java.sql.Timestamp;
 public class ExceptionForm {
 
     private Timestamp timestamp;
+
+    @JsonIgnore
     private HttpStatus status;
+
     private String errorCode;
     private String error;
     private String exception;
@@ -22,6 +27,11 @@ public class ExceptionForm {
         this.exception = exception;
         this.message = message;
         this.path = path;
+    }
+
+    @JsonProperty("status")
+    public int getStatusCode() {
+        return status.value();
     }
 
     public void setStatus(HttpStatus status) {
