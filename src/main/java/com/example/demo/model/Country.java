@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Country")
@@ -19,6 +20,10 @@ public class Country {
 
     @Column(name = "prefix")
     private String prefix;
+
+    @Version
+    @Column(name = "lastupdatedate")
+    private Timestamp lastUpdateDate;
 
     public Country() {
 
@@ -45,6 +50,14 @@ public class Country {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public void setLastUpdateDate(Timestamp lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public Timestamp getLastUpdateDate() {
+        return lastUpdateDate;
     }
 
     public void setIso(String iso) {
