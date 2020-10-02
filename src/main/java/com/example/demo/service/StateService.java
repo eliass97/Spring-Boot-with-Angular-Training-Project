@@ -4,37 +4,36 @@ import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.State;
-import com.example.demo.repository.CountryRepository;
 import com.example.demo.repository.StateRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class CountryService {
+public class StateService {
 
     private final StateRepository StateRepository;
-    private final CountryRepository CountryRepository;
+    private final CountryService CountryService;
 
-    public CountryService(CountryRepository CountryRepository, StateRepository StateRepository) {
+    public StateService(StateRepository StateRepository, CountryService CountryService) {
         this.StateRepository = StateRepository;
-        this.CountryRepository = CountryRepository;
+        this.CountryService = CountryService;
     }
 
     public Iterable<State> findAll() {
-        return CountryRepository.findAll();
+        return StateRepository.findAll();
     }
 
     public State findById(int id) throws DemoException {
-        Optional<State> result = CountryRepository.findById(id);
+        Optional<State> result = StateRepository.findById(id);
         if (result.isEmpty()) {
-            throw new NotFoundException("Country not found");
+            throw new NotFoundException("State not found");
         }
         return result.get();
     }
 
     public State create(State newState) {
-        return CountryRepository.save(newState);
+        return StateRepository.save(newState);
     }
 
     public State update(int id, State newState) throws DemoException {
@@ -42,12 +41,17 @@ public class CountryService {
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         findById(id);
+        try {
+            CountryService.findById(newState.getCountry_id());
+        } catch (DemoException e) {
+            throw new BadRequestException("Provided country_id does not match with any of the existing countries");
+        }
         newState.setId(id);
-        return CountryRepository.save(newState);
+        return StateRepository.save(newState);
     }
 
     public void delete(int id) throws DemoException {
         findById(id);
-        CountryRepository.deleteById(id);
+        StateRepository.deleteById(id);
     }
 }

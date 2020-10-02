@@ -1,7 +1,7 @@
 package com.example.demo.endpoint;
 
 import com.example.demo.exceptions.DemoException;
-import com.example.demo.model.Country;
+import com.example.demo.model.State;
 import com.example.demo.service.CountryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,24 +19,24 @@ public class CountryEndpoint {
     }
 
     @GetMapping
-    public Iterable<Country> getAllCountries() {
-        return (List<Country>) CountryService.findAll();
+    public Iterable<State> getAllCountries() {
+        return (List<State>) CountryService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Country getCountryById(@PathVariable("id") int id) throws DemoException {
+    public State getCountryById(@PathVariable("id") int id) throws DemoException {
         return CountryService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Country createCountry(@RequestBody Country newCountry) {
-        return CountryService.create(newCountry);
+    public State createCountry(@RequestBody State newState) {
+        return CountryService.create(newState);
     }
 
     @PutMapping("/{id}")
-    public Country updateCountry(@PathVariable int id, @RequestBody Country newCountry) throws DemoException {
-        return CountryService.update(id, newCountry);
+    public State updateCountry(@PathVariable int id, @RequestBody State newState) throws DemoException {
+        return CountryService.update(id, newState);
     }
 
     @DeleteMapping("/{id}")
