@@ -29,11 +29,12 @@ public class Country {
 
     }
 
-    public Country(int id, String iso, String description, String prefix) {
+    public Country(int id, String iso, String description, String prefix, Timestamp lastUpdateDate) {
         this.id = id;
         this.iso = iso;
         this.description = description;
         this.prefix = prefix;
+        this.lastUpdateDate = lastUpdateDate;
     }
 
     public String getIso() {
@@ -78,6 +79,6 @@ public class Country {
 
     @Override
     public String toString() {
-        return "Country: [" + id + ", " + iso + ", " + prefix + ", " + description + "]";
+        return "Country: [" + id + ", " + iso + ", " + prefix + ", " + description + ", " + lastUpdateDate + "]";
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.exceptions.BadRequestException;
+import com.example.demo.exceptions.ConflictException;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.Country;
@@ -48,12 +49,17 @@ public class CountryService {
             logger.info("PUT -> update -> BadRequestException for path_id = " + id + " and body_id = " + newCountry.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
+        if (!newCountry.getLastUpdateDate().equals(findById(id).getLastUpdateDate())) {
+            logger.info("PUT -> update -> ConflictException for " + newCountry.toString());
+            throw new ConflictException("Different country versions during update");
+        }
         Country result = findById(id);
         result.setIso(newCountry.getIso());
         result.setDescription(newCountry.getDescription());
         result.setPrefix(newCountry.getPrefix());
-        logger.info("PUT -> update -> Updated "+result.toString());
-        return CountryRepository.save(result);
+        newCountry = CountryRepository.save(result);
+        logger.info("PUT -> update -> Updated " + result.toString());
+        return newCountry;
     }
 
     public void delete(int id) throws DemoException {
