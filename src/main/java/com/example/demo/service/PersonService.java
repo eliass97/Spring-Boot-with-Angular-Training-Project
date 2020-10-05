@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.exceptions.BadRequestException;
+import com.example.demo.exceptions.ConflictException;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.Country;
@@ -51,51 +52,61 @@ public class PersonService {
     }
 
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {
-        if (newPersonDTO.getCountryOfBirthISO() == null || newPersonDTO.getCountryOfResidenceISO() == null) {
-            logger.info("PersonService -> POST -> create -> BadRequestException for " + newPersonDTO.toString());
-            throw new BadRequestException("CountryOfBirthISO and/or CountryOfResidenceISO not provided");
-        }
-        List<Country> countryOfBirth = (List<Country>) CountryRepository.findByIso(newPersonDTO.getCountryOfBirthISO());
-        if (countryOfBirth.isEmpty()) {
-            logger.info("PersonService -> POST -> create -> NotFoundException for iso = " + newPersonDTO.getCountryOfBirthISO());
-            throw new NotFoundException("Country not found for iso = " + newPersonDTO.getCountryOfBirthISO());
-        }
-        List<Country> countryOfResidence = (List<Country>) CountryRepository.findByIso(newPersonDTO.getCountryOfResidenceISO());
-        if (countryOfResidence.isEmpty()) {
-            logger.info("PersonService -> POST -> create -> NotFoundException for iso = " + newPersonDTO.getCountryOfResidenceISO());
-            throw new NotFoundException("Country not found for iso = " + newPersonDTO.getCountryOfResidenceISO());
-        }
-        Person newPerson = new Person(newPersonDTO, countryOfBirth.get(0), countryOfResidence.get(0));
+        List<Country> countriesOfBirthAndResidence = getBirthResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
+        Person newPerson = new Person(newPersonDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(0));
         logger.info("PersonService -> POST -> create -> " + newPersonDTO.toString());
         Person result = PersonRepository.save(newPerson);
         return new PersonDTO(result);
     }
 
     public PersonDTO update(int id, PersonDTO newPersonDTO) throws DemoException {
-        if (newPerson.getId() != id && newPerson.getId() != 0) {
-            logger.info("PersonService -> PUT -> update -> BadRequestException for path_id = " + id + " and body_id = " + newPerson.getId());
+        if (newPersonDTO.getId() != id && newPersonDTO.getId() != 0) {
+            logger.info("PersonService -> PUT -> update -> BadRequestException for path_id = " + id + " and body_id = " + newPersonDTO.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
-        if (!newPerson.getLastUpdateDate().equals(findById(id).getLastUpdateDate())) {
-            logger.info("PersonService -> PUT -> update -> ConflictException for " + newPerson.toString());
-            throw new ConflictException("Different person versions during update");
+        if (!newPersonDTO.getLastUpdateDate().equals(findById(id).getLastUpdateDate())) {
+            logger.info("PersonService -> PUT -> update -> ConflictException for " + newPersonDTO.toString());
+            throw new ConflictException("Different country versions during update");
         }
-        Person result = findById(id);
-        result.setFullName(newPerson.getFullName());
-        result.setSex(newPerson.getSex());
-        result.setDateOfBirth(newPerson.getDateOfBirth());
-        result.setCountryOfBirth(newPerson.getCountryOfBirth());
-        result.setCountryOfResidence(newPerson.getCountryOfResidence());
-        result.setTelephone(newPerson.getTelephone());
-        result.setEmail(newPerson.getEmail());
-        newPerson = PersonRepository.save(result);
-        logger.info("PersonService -> PUT -> update -> Updated " + result.toString());
-        return newPerson;
+        List<Country> countriesOfBirthAndResidence = getBirthResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
+        PersonDTO resultDTO = findById(id);
+        resultDTO.setFullName(newPersonDTO.getFullName());
+        resultDTO.setSex(newPersonDTO.getSex());
+        resultDTO.setDateOfBirth(newPersonDTO.getDateOfBirth());
+        resultDTO.setCountryOfBirthISO(newPersonDTO.getCountryOfBirthISO());
+        resultDTO.setCountryOfResidenceISO(newPersonDTO.getCountryOfResidenceISO());
+        resultDTO.setTelephone(newPersonDTO.getTelephone());
+        resultDTO.setEmail(newPersonDTO.getEmail());
+        resultDTO.setLastUpdateDate(newPersonDTO.getLastUpdateDate());
+        logger.info("PersonService -> PUT -> update -> Updated " + resultDTO.toString());
+        Person result = PersonRepository.save(new Person(resultDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(1)));
+        return new PersonDTO(result);
     }
 
     public void delete(int id) throws DemoException {
         findById(id);
         logger.info("PersonService -> POST -> delete -> Deleted person with id = " + id);
         PersonRepository.deleteById(id);
+    }
+
+    private List<Country> getBirthResidenceCountries(String countryOfBirthISO, String countryOfResidenceISO) throws DemoException {
+        if (countryOfBirthISO == null || countryOfResidenceISO == null) {
+            logger.info("PersonService -> POST -> create -> BadRequestException for not provided iso");
+            throw new BadRequestException("CountryOfBirthISO and/or CountryOfResidenceISO not provided");
+        }
+        List<Country> countryOfBirth = (List<Country>) CountryRepository.findByIso(countryOfBirthISO);
+        if (countryOfBirth.isEmpty()) {
+            logger.info("PersonService -> POST -> create -> NotFoundException for iso = " + countryOfBirthISO);
+            throw new NotFoundException("Country not found for iso = " + countryOfBirthISO);
+        }
+        List<Country> countryOfResidence = (List<Country>) CountryRepository.findByIso(countryOfResidenceISO);
+        if (countryOfResidence.isEmpty()) {
+            logger.info("PersonService -> POST -> create -> NotFoundException for iso = " + countryOfResidenceISO);
+            throw new NotFoundException("Country not found for iso = " + countryOfResidenceISO);
+        }
+        List<Country> result = new LinkedList<>();
+        result.add(countryOfBirth.get(0));
+        result.add(countryOfResidence.get(0));
+        return result;
     }
 }
