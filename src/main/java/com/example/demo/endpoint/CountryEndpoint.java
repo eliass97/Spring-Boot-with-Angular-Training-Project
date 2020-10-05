@@ -20,7 +20,7 @@ public class CountryEndpoint {
 
     @GetMapping
     public List<Country> getAllCountries() {
-        return (List<Country>) CountryService.findAll();
+        return CountryService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -35,8 +35,8 @@ public class CountryEndpoint {
     }
 
     @PutMapping("/{id}")
-    public Country updateCountry(@PathVariable int id, @RequestBody Country newCountry) throws DemoException {
-        return CountryService.update(id, newCountry);
+    public Country updateCountry(@PathVariable int id, @RequestBody Country updatedCountry) throws DemoException {
+        return CountryService.update(id, updatedCountry);
     }
 
     @DeleteMapping("/{id}")

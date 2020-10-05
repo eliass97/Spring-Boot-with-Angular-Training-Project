@@ -35,8 +35,8 @@ public class PersonEndpoint {
     }
 
     @PutMapping("/{id}")
-    public PersonDTO updatePerson(@PathVariable int id, @RequestBody PersonDTO newPersonDTO) throws DemoException {
-        return PersonService.update(id, newPersonDTO);
+    public PersonDTO updatePerson(@PathVariable int id, @RequestBody PersonDTO updatedPersonDTO) throws DemoException {
+        return PersonService.update(id, updatedPersonDTO);
     }
 
     @DeleteMapping("/{id}")
