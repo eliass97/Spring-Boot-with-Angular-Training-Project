@@ -32,12 +32,12 @@ public class PersonService {
     }
 
     public List<PersonDTO> findAll() {
-        logger.info("PersonService -> GET -> findAll");
         List<Person> result = PersonRepository.findAll();
         LinkedList<PersonDTO> resultDTO = new LinkedList<>();
         for (Person person : result) {
             resultDTO.add(new PersonDTO(person));
         }
+        logger.info("PersonService -> GET -> findAll -> Searched for all");
         return resultDTO;
     }
 
@@ -47,27 +47,20 @@ public class PersonService {
             logger.info("PersonService -> GET -> findById -> NotFoundException for id = " + id);
             throw new NotFoundException("Person not found");
         }
-        logger.info("PersonService -> GET -> findById -> Successful for id = " + id);
+        logger.info("PersonService -> GET -> findById -> Searched for id = " + id);
         return new PersonDTO(result.get());
     }
 
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {
         List<Country> countriesOfBirthAndResidence = getBirthResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
         Person newPerson = new Person(newPersonDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(0));
-        logger.info("PersonService -> POST -> create -> " + newPersonDTO.toString());
         Person result = PersonRepository.save(newPerson);
+        logger.info("PersonService -> POST -> create -> Created " + newPersonDTO.toString());
         return new PersonDTO(result);
     }
 
     public PersonDTO update(int id, PersonDTO newPersonDTO) throws DemoException {
-        if (newPersonDTO.getId() != id && newPersonDTO.getId() != 0) {
-            logger.info("PersonService -> PUT -> update -> BadRequestException for path_id = " + id + " and body_id = " + newPersonDTO.getId());
-            throw new BadRequestException("Path ID variable does not match with body ID");
-        }
-        if (!newPersonDTO.getLastUpdateDate().equals(findById(id).getLastUpdateDate())) {
-            logger.info("PersonService -> PUT -> update -> ConflictException for " + newPersonDTO.toString());
-            throw new ConflictException("Different country versions during update");
-        }
+        updateChecks(id, newPersonDTO);
         List<Country> countriesOfBirthAndResidence = getBirthResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
         PersonDTO resultDTO = findById(id);
         resultDTO.setFullName(newPersonDTO.getFullName());
@@ -78,15 +71,27 @@ public class PersonService {
         resultDTO.setTelephone(newPersonDTO.getTelephone());
         resultDTO.setEmail(newPersonDTO.getEmail());
         resultDTO.setLastUpdateDate(newPersonDTO.getLastUpdateDate());
+        Person newPerson = new Person(resultDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(1));
+        Person result = PersonRepository.save(newPerson);
         logger.info("PersonService -> PUT -> update -> Updated " + resultDTO.toString());
-        Person result = PersonRepository.save(new Person(resultDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(1)));
         return new PersonDTO(result);
     }
 
     public void delete(int id) throws DemoException {
         findById(id);
-        logger.info("PersonService -> POST -> delete -> Deleted person with id = " + id);
         PersonRepository.deleteById(id);
+        logger.info("PersonService -> POST -> delete -> Deleted person with id = " + id);
+    }
+
+    private void updateChecks(int path_id, PersonDTO newPersonDTO) throws DemoException {
+        if (newPersonDTO.getId() != path_id && newPersonDTO.getId() != 0) {
+            logger.info("PersonService -> PUT -> update -> BadRequestException for path_id = " + path_id + " and body_id = " + newPersonDTO.getId());
+            throw new BadRequestException("Path ID variable does not match with body ID");
+        }
+        if (!newPersonDTO.getLastUpdateDate().equals(findById(path_id).getLastUpdateDate())) {
+            logger.info("PersonService -> PUT -> update -> ConflictException for " + newPersonDTO.toString());
+            throw new ConflictException("Different country versions during update");
+        }
     }
 
     private List<Country> getBirthResidenceCountries(String countryOfBirthISO, String countryOfResidenceISO) throws DemoException {
