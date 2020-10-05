@@ -52,7 +52,7 @@ public class PersonService {
     }
 
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {
-        List<Country> countriesOfBirthAndResidence = getBirthResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
+        List<Country> countriesOfBirthAndResidence = getBirthAndResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
         Person newPerson = new Person(newPersonDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(0));
         Person result = PersonRepository.save(newPerson);
         logger.info("PersonService -> POST -> create -> Created " + newPersonDTO.toString());
@@ -61,16 +61,8 @@ public class PersonService {
 
     public PersonDTO update(int id, PersonDTO newPersonDTO) throws DemoException {
         updateChecks(id, newPersonDTO);
-        List<Country> countriesOfBirthAndResidence = getBirthResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
-        PersonDTO resultDTO = findById(id);
-        resultDTO.setFullName(newPersonDTO.getFullName());
-        resultDTO.setSex(newPersonDTO.getSex());
-        resultDTO.setDateOfBirth(newPersonDTO.getDateOfBirth());
-        resultDTO.setCountryOfBirthISO(newPersonDTO.getCountryOfBirthISO());
-        resultDTO.setCountryOfResidenceISO(newPersonDTO.getCountryOfResidenceISO());
-        resultDTO.setTelephone(newPersonDTO.getTelephone());
-        resultDTO.setEmail(newPersonDTO.getEmail());
-        resultDTO.setLastUpdateDate(newPersonDTO.getLastUpdateDate());
+        List<Country> countriesOfBirthAndResidence = getBirthAndResidenceCountries(newPersonDTO.getCountryOfBirthISO(), newPersonDTO.getCountryOfResidenceISO());
+        PersonDTO resultDTO = updateRetrievedPersonDTO(id, newPersonDTO);
         Person newPerson = new Person(resultDTO, countriesOfBirthAndResidence.get(0), countriesOfBirthAndResidence.get(1));
         Person result = PersonRepository.save(newPerson);
         logger.info("PersonService -> PUT -> update -> Updated " + resultDTO.toString());
@@ -94,7 +86,7 @@ public class PersonService {
         }
     }
 
-    private List<Country> getBirthResidenceCountries(String countryOfBirthISO, String countryOfResidenceISO) throws DemoException {
+    private List<Country> getBirthAndResidenceCountries(String countryOfBirthISO, String countryOfResidenceISO) throws DemoException {
         if (countryOfBirthISO == null || countryOfResidenceISO == null) {
             logger.info("PersonService -> POST -> create -> BadRequestException for not provided iso");
             throw new BadRequestException("CountryOfBirthISO and/or CountryOfResidenceISO not provided");
@@ -113,5 +105,18 @@ public class PersonService {
         result.add(countryOfBirth.get(0));
         result.add(countryOfResidence.get(0));
         return result;
+    }
+
+    private PersonDTO updateRetrievedPersonDTO(int id, PersonDTO newPersonDTO) throws DemoException {
+        PersonDTO resultDTO = findById(id);
+        resultDTO.setFullName(newPersonDTO.getFullName());
+        resultDTO.setSex(newPersonDTO.getSex());
+        resultDTO.setDateOfBirth(newPersonDTO.getDateOfBirth());
+        resultDTO.setCountryOfBirthISO(newPersonDTO.getCountryOfBirthISO());
+        resultDTO.setCountryOfResidenceISO(newPersonDTO.getCountryOfResidenceISO());
+        resultDTO.setTelephone(newPersonDTO.getTelephone());
+        resultDTO.setEmail(newPersonDTO.getEmail());
+        resultDTO.setLastUpdateDate(newPersonDTO.getLastUpdateDate());
+        return resultDTO;
     }
 }

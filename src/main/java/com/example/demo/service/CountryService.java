@@ -47,10 +47,7 @@ public class CountryService {
 
     public Country update(int id, Country newCountry) throws DemoException {
         updateChecks(id, newCountry);
-        Country result = findById(id);
-        result.setIso(newCountry.getIso());
-        result.setDescription(newCountry.getDescription());
-        result.setPrefix(newCountry.getPrefix());
+        Country result = updateRetrievedCountry(id, newCountry);
         newCountry = CountryRepository.save(result);
         logger.info("CountryService -> PUT -> update -> Updated " + result.toString());
         return newCountry;
@@ -71,5 +68,13 @@ public class CountryService {
             logger.info("CountryService -> PUT -> update -> ConflictException for " + newCountry.toString());
             throw new ConflictException("Different country versions during update");
         }
+    }
+
+    private Country updateRetrievedCountry(int id, Country newCountry) throws DemoException{
+        Country result = findById(id);
+        result.setIso(newCountry.getIso());
+        result.setDescription(newCountry.getDescription());
+        result.setPrefix(newCountry.getPrefix());
+        return result;
     }
 }

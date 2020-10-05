@@ -20,7 +20,7 @@ public class PersonEndpoint {
 
     @GetMapping
     public List<PersonDTO> getAllPeople() {
-        return (List<PersonDTO>) PersonService.findAll();
+        return PersonService.findAll();
     }
 
     @GetMapping("/{id}")
