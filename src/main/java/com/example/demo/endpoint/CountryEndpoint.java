@@ -19,7 +19,7 @@ public class CountryEndpoint {
     }
 
     @GetMapping
-    public Iterable<Country> getAllCountries() {
+    public List<Country> getAllCountries() {
         return (List<Country>) CountryService.findAll();
     }
 

@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Entity
@@ -35,11 +36,15 @@ public class Person {
     @Column(name = "email")
     private String email;
 
+    @Version
+    @Column(name = "last_update_date")
+    private Timestamp lastUpdateDate;
+
     public Person() {
 
     }
 
-    public Person(int id, String fullName, LocalDate dateOfBirth, String sex, Country countryOfBirth, Country countryOfResidence, String telephone, String email) {
+    public Person(int id, String fullName, LocalDate dateOfBirth, String sex, Country countryOfBirth, Country countryOfResidence, String telephone, String email, Timestamp lastUpdateDate) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
@@ -48,6 +53,19 @@ public class Person {
         this.countryOfResidence = countryOfResidence;
         this.telephone = telephone;
         this.email = email;
+        this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public Person(PersonDTO persondto, Country countryOfBirth, Country countryOfResidence) {
+        this(persondto.getId(), persondto.getFullName(), persondto.getDateOfBirth(), persondto.getSex(), countryOfBirth, countryOfResidence, persondto.getTelephone(), persondto.getEmail(), persondto.getLastUpdateDate());
+    }
+
+    public Timestamp getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    public void setLastUpdateDate(Timestamp lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
     }
 
     public int getId() {
@@ -116,6 +134,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person: [" + id + ", " + fullName + ", " + dateOfBirth + ", " + countryOfBirth + ", " + countryOfResidence + ", " + telephone + ", " + email + "]";
+        return "Person: [" + id + ", " + fullName + ", " + dateOfBirth + ", " + sex + ", " + countryOfBirth.getId() + ", " + countryOfResidence.getId() + ", " + telephone + ", " + email + ", " + lastUpdateDate + "]";
     }
 }
