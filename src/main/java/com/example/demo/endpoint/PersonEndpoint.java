@@ -20,7 +20,7 @@ public class PersonEndpoint {
 
     @GetMapping
     public List<PersonDTO> getAllPeople() {
-        return (List<PersonDTO>) PersonService.findAll();
+        return PersonService.findAll();
     }
 
     @GetMapping("/{id}")
@@ -35,8 +35,8 @@ public class PersonEndpoint {
     }
 
     @PutMapping("/{id}")
-    public PersonDTO updatePerson(@PathVariable int id, @RequestBody PersonDTO newPersonDTO) throws DemoException {
-        return PersonService.update(id, newPersonDTO);
+    public PersonDTO updatePerson(@PathVariable int id, @RequestBody PersonDTO updatedPersonDTO) throws DemoException {
+        return PersonService.update(id, updatedPersonDTO);
     }
 
     @DeleteMapping("/{id}")

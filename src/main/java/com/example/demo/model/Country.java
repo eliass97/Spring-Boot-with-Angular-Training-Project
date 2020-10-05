@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
 @Table(name = "Country")
@@ -26,12 +25,6 @@ public class Country {
     @Column(name = "last_update_date")
     private Timestamp lastUpdateDate;
 
-    @OneToMany(mappedBy = "countryOfBirth", targetEntity = Person.class)
-    private List<Person> origins;
-
-    @OneToMany(mappedBy = "countryOfResidence", targetEntity = Person.class)
-    private List<Person> residents;
-
     public Country() {
 
     }
@@ -42,22 +35,6 @@ public class Country {
         this.description = description;
         this.prefix = prefix;
         this.lastUpdateDate = lastUpdateDate;
-    }
-
-    public List<Person> getOrigins() {
-        return origins;
-    }
-
-    public List<Person> getResidents() {
-        return residents;
-    }
-
-    public void setOrigins(List<Person> origins) {
-        this.origins = origins;
-    }
-
-    public void setResidents(List<Person> residents) {
-        this.residents = residents;
     }
 
     public String getIso() {
