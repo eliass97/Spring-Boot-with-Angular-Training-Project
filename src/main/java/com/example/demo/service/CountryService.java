@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.DemoApplication;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.exceptions.NotFoundException;
@@ -16,7 +15,7 @@ import java.util.Optional;
 @Service
 public class CountryService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DemoApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountryService.class);
 
     private final CountryRepository countryRepository;
 
@@ -62,7 +61,7 @@ public class CountryService {
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         countryToBeUpdated.check(updatedCountry.getLastUpdateDate());
-        if (isoExistsInDatabase(updatedCountry.getIso())) {
+        if (isoExistsInDatabase(updatedCountry.getIso()) && getCountryByIso(updatedCountry.getIso()).getId() != pathId) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");
         }

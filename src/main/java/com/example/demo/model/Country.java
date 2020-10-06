@@ -26,7 +26,7 @@ public class Country extends DemoObject {
     }
 
     public Country(int id, String iso, String description, String prefix, Timestamp lastUpdateDate) {
-        super(lastUpdateDate);
+        this.setLastUpdateDate(lastUpdateDate);
         this.id = id;
         this.iso = iso;
         this.description = description;

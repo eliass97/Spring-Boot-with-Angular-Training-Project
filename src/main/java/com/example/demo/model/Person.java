@@ -41,7 +41,7 @@ public class Person extends DemoObject {
     }
 
     public Person(int id, String fullName, LocalDate dateOfBirth, String sex, Country countryOfBirth, Country countryOfResidence, String telephone, String email, Timestamp lastUpdateDate) {
-        super(lastUpdateDate);
+        this.setLastUpdateDate(lastUpdateDate);
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;

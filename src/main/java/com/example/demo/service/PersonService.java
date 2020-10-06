@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.DemoApplication;
 import com.example.demo.exceptions.BadRequestException;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.exceptions.NotFoundException;
@@ -19,7 +18,7 @@ import java.util.Optional;
 @Service
 public class PersonService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DemoApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
 
     private final PersonRepository personRepository;
     private final CountryService countryService;
