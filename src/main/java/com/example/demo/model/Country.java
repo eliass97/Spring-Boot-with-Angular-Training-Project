@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Country")
-public class Country {
+public class Country extends DemoObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "country_id_seq")
@@ -21,20 +21,16 @@ public class Country {
     @Column(name = "prefix")
     private String prefix;
 
-    @Version
-    @Column(name = "last_update_date")
-    private Timestamp lastUpdateDate;
-
     public Country() {
 
     }
 
     public Country(int id, String iso, String description, String prefix, Timestamp lastUpdateDate) {
+        super(lastUpdateDate);
         this.id = id;
         this.iso = iso;
         this.description = description;
         this.prefix = prefix;
-        this.lastUpdateDate = lastUpdateDate;
     }
 
     public String getIso() {
@@ -51,14 +47,6 @@ public class Country {
 
     public String getPrefix() {
         return prefix;
-    }
-
-    public void setLastUpdateDate(Timestamp lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
-    }
-
-    public Timestamp getLastUpdateDate() {
-        return lastUpdateDate;
     }
 
     public void setIso(String iso) {
@@ -79,6 +67,6 @@ public class Country {
 
     @Override
     public String toString() {
-        return "Country: [" + id + ", " + iso + ", " + prefix + ", " + description + ", " + lastUpdateDate + "]";
+        return "Country: [" + id + ", " + iso + ", " + prefix + ", " + description + ", " + getLastUpdateDate() + "]";
     }
 }

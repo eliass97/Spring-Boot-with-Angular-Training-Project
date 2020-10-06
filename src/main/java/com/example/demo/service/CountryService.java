@@ -57,11 +57,13 @@ public class CountryService {
         return result;
     }
 
-    private void updateChecks(int pathId, Country updatedCountry, Country countryFromDatabase) throws DemoException {
+    private void updateChecks(int pathId, Country updatedCountry, Country countryToBeUpdated) throws DemoException {
         if (updatedCountry.getId() != pathId && updatedCountry.getId() != 0) {
             LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedCountry.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
+        countryToBeUpdated.check(updatedCountry);
+        /*
         if (updatedCountry.getLastUpdateDate() == null) {
             LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException");
             throw new BadRequestException("LastUpdateDate was not provided in the request body");
@@ -70,6 +72,7 @@ public class CountryService {
             LOGGER.error("CountryService -> PUT -> update -> ConflictException for {}", updatedCountry);
             throw new ConflictException("Different country versions during update");
         }
+        */
         if (isoExistsInDatabase(updatedCountry.getIso())) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");

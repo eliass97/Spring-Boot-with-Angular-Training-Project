@@ -76,6 +76,8 @@ public class PersonService {
             LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedPersonDTO.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
+        personToBeUpdated.check(updatedPersonDTO);
+        /*
         if (updatedPersonDTO.getLastUpdateDate() == null) {
             LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException");
             throw new BadRequestException("LastUpdateDate was not provided in the request body");
@@ -84,6 +86,7 @@ public class PersonService {
             LOGGER.error("PersonService -> basicUpdateChecks -> ConflictException for {}", updatedPersonDTO);
             throw new ConflictException("Different country versions during update");
         }
+        */
         if (updatedPersonDTO.getCountryOfBirthISO() == null || updatedPersonDTO.getCountryOfResidenceISO() == null) {
             LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException");
             throw new BadRequestException("Country ISO not provided");
