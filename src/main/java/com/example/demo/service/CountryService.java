@@ -42,7 +42,7 @@ public class CountryService {
 
     public Country create(Country newCountry) throws DemoException {
         LOGGER.info("CountryService -> POST -> create -> Created {}", newCountry.toString());
-        if (isoExists(newCountry.getIso())) {
+        if (isoExistsInDatabase(newCountry.getIso())) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", newCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");
         }
@@ -70,7 +70,7 @@ public class CountryService {
             LOGGER.error("CountryService -> PUT -> update -> ConflictException for {}", updatedCountry);
             throw new ConflictException("Different country versions during update");
         }
-        if (isoExists(updatedCountry.getIso())) {
+        if (isoExistsInDatabase(updatedCountry.getIso())) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");
         }
@@ -89,7 +89,7 @@ public class CountryService {
         LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
     }
 
-    private boolean isoExists(String iso) {
+    public boolean isoExistsInDatabase(String iso) {
         try {
             getCountryByIso(iso);
         } catch (DemoException e) {
@@ -101,7 +101,6 @@ public class CountryService {
     public Country getCountryByIso(String iso) throws DemoException {
         Optional<Country> result = countryRepository.findByIso(iso);
         if (result.isEmpty()) {
-            LOGGER.error("CountryService -> getCountryByIso -> NotFoundException for iso = {}", iso);
             throw new NotFoundException("Country not found for iso = " + iso);
         }
         return result.get();
