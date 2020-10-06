@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.exceptions.BadRequestException;
-import com.example.demo.exceptions.ConflictException;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.model.Country;
@@ -62,17 +61,7 @@ public class CountryService {
             LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedCountry.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
-        countryToBeUpdated.check(updatedCountry);
-        /*
-        if (updatedCountry.getLastUpdateDate() == null) {
-            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException");
-            throw new BadRequestException("LastUpdateDate was not provided in the request body");
-        }
-        if (!updatedCountry.getLastUpdateDate().equals(countryFromDatabase.getLastUpdateDate())) {
-            LOGGER.error("CountryService -> PUT -> update -> ConflictException for {}", updatedCountry);
-            throw new ConflictException("Different country versions during update");
-        }
-        */
+        countryToBeUpdated.check(updatedCountry.getLastUpdateDate());
         if (isoExistsInDatabase(updatedCountry.getIso())) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");

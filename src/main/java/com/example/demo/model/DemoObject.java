@@ -38,13 +38,13 @@ public class DemoObject {
         return lastUpdateDate;
     }
 
-    public void check(DemoObject other) throws DemoException {
-        if (lastUpdateDate == null || other.getLastUpdateDate() == null) {
+    public void check(Timestamp otherLastUpdateDate) throws DemoException {
+        if (lastUpdateDate == null || otherLastUpdateDate == null) {
             LOGGER.error("DemoObject -> versionChecks -> BadRequestException");
             throw new BadRequestException("LastUpdateDate was not provided in the request body");
         }
-        if (!lastUpdateDate.equals(other.getLastUpdateDate())) {
-            LOGGER.error("DemoObject -> versionChecks -> ConflictException for {}", other);
+        if (!lastUpdateDate.equals(otherLastUpdateDate)) {
+            LOGGER.error("DemoObject -> versionChecks -> ConflictException");
             throw new ConflictException("Different country versions during update");
         }
     }
