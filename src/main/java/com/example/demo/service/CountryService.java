@@ -19,19 +19,19 @@ public class CountryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DemoApplication.class);
 
-    private final CountryRepository CountryRepository;
+    private final CountryRepository countryRepository;
 
     public CountryService(CountryRepository CountryRepository) {
-        this.CountryRepository = CountryRepository;
+        this.countryRepository = CountryRepository;
     }
 
     public List<Country> findAll() {
         LOGGER.info("CountryService -> GET -> Searched for all");
-        return CountryRepository.findAll();
+        return countryRepository.findAll();
     }
 
     public Country findById(int id) throws DemoException {
-        Optional<Country> result = CountryRepository.findById(id);
+        Optional<Country> result = countryRepository.findById(id);
         if (result.isEmpty()) {
             LOGGER.error("CountryService -> GET -> findById -> NotFoundException for id = {}", id);
             throw new NotFoundException("Country not found");
@@ -42,7 +42,7 @@ public class CountryService {
 
     public Country create(Country newCountry) {
         LOGGER.info("CountryService -> POST -> create -> Created {}", newCountry.toString());
-        return CountryRepository.save(newCountry);
+        return countryRepository.save(newCountry);
     }
 
     public Country update(int pathId, Country updatedCountry) throws DemoException {
@@ -51,12 +51,6 @@ public class CountryService {
         Country result = updateAndSaveInDatabase(updatedCountry, countryToBeUpdated);
         LOGGER.info("CountryService -> PUT -> update -> Updated {}", result);
         return result;
-    }
-
-    public void delete(int id) throws DemoException {
-        findById(id);
-        CountryRepository.deleteById(id);
-        LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
     }
 
     private void updateChecks(int pathId, Country updatedCountry, Country countryFromDatabase) throws DemoException {
@@ -78,6 +72,21 @@ public class CountryService {
         countryToBeUpdated.setIso(updatedCountry.getIso());
         countryToBeUpdated.setDescription(updatedCountry.getDescription());
         countryToBeUpdated.setPrefix(updatedCountry.getPrefix());
-        return CountryRepository.save(countryToBeUpdated);
+        return countryRepository.save(countryToBeUpdated);
+    }
+
+    public void delete(int id) throws DemoException {
+        findById(id);
+        countryRepository.deleteById(id);
+        LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
+    }
+
+    public Country getCountryByIso(String iso) throws DemoException {
+        Optional<Country> result = countryRepository.findByIso(iso);
+        if (result.isEmpty()) {
+            LOGGER.error("CountryService -> getCountryByIso -> NotFoundException for iso = {}", iso);
+            throw new NotFoundException("Country not found for iso = " + iso);
+        }
+        return result.get();
     }
 }
