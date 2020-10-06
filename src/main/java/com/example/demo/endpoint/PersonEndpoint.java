@@ -25,7 +25,7 @@ public class PersonEndpoint {
 
     @GetMapping("/{id}")
     public PersonDTO getPersonById(@PathVariable("id") int id) throws DemoException {
-        return PersonService.findById(id);
+        return PersonService.findByIdDTO(id);
     }
 
     @PostMapping

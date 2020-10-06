@@ -41,14 +41,19 @@ public class PersonService {
         return resultDTO;
     }
 
-    public PersonDTO findById(int id) throws DemoException {
+    public PersonDTO findByIdDTO(int id) throws DemoException {
+        Person result = findById(id);
+        LOGGER.info("PersonService -> GET -> findById -> Searched for id = {}", id);
+        return new PersonDTO(result);
+    }
+
+    private Person findById(int id) throws DemoException {
         Optional<Person> result = PersonRepository.findById(id);
         if (result.isEmpty()) {
             LOGGER.error("PersonService -> GET -> findById -> NotFoundException for id = {}", id);
             throw new NotFoundException("Person not found");
         }
-        LOGGER.info("PersonService -> GET -> findById -> Searched for id = {}", id);
-        return new PersonDTO(result.get());
+        return result.get();
     }
 
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {
@@ -60,22 +65,7 @@ public class PersonService {
         return new PersonDTO(result);
     }
 
-    public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
-        Person personToBeUpdated = PersonRepository.findById(pathId).get();
-        updateChecks(pathId, updatedPersonDTO, personToBeUpdated);
-        Person result = updateAndSaveInDatabase(updatedPersonDTO, personToBeUpdated);
-        PersonDTO resultDTO = new PersonDTO(result);
-        LOGGER.info("PersonService -> PUT -> update -> Updated {}", resultDTO);
-        return resultDTO;
-    }
-
-    public void delete(int id) throws DemoException {
-        findById(id);
-        PersonRepository.deleteById(id);
-        LOGGER.info("PersonService -> DELETE -> delete -> Deleted person with id = {}", id);
-    }
-
-    public Country getCountryByIso(String iso) throws DemoException {
+    private Country getCountryByIso(String iso) throws DemoException {
         if (iso == null) {
             LOGGER.error("PersonService -> getCountryByIso -> BadRequestException");
             throw new BadRequestException("Country ISO not provided");
@@ -86,6 +76,15 @@ public class PersonService {
             throw new NotFoundException("Country not found for iso = " + iso);
         }
         return result.get(0);
+    }
+
+    public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
+        Person personToBeUpdated = findById(pathId);
+        updateChecks(pathId, updatedPersonDTO, personToBeUpdated);
+        Person result = updateAndSaveInDatabase(updatedPersonDTO, personToBeUpdated);
+        PersonDTO resultDTO = new PersonDTO(result);
+        LOGGER.info("PersonService -> PUT -> update -> Updated {}", resultDTO);
+        return resultDTO;
     }
 
     private void updateChecks(int pathId, PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
@@ -103,7 +102,7 @@ public class PersonService {
         }
     }
 
-    private Person updateAndSaveInDatabase(PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException{
+    private Person updateAndSaveInDatabase(PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
         Country countryOfBirth = getCountryByIso(updatedPersonDTO.getCountryOfBirthISO());
         Country countryOfResidence = getCountryByIso(updatedPersonDTO.getCountryOfResidenceISO());
         personToBeUpdated.setFullName(updatedPersonDTO.getFullName());
@@ -114,5 +113,11 @@ public class PersonService {
         personToBeUpdated.setTelephone(updatedPersonDTO.getTelephone());
         personToBeUpdated.setEmail(updatedPersonDTO.getEmail());
         return PersonRepository.save(personToBeUpdated);
+    }
+
+    public void delete(int id) throws DemoException {
+        findById(id);
+        PersonRepository.deleteById(id);
+        LOGGER.info("PersonService -> DELETE -> delete -> Deleted person with id = {}", id);
     }
 }
