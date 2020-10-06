@@ -44,7 +44,7 @@ public class CountryService {
         LOGGER.info("CountryService -> POST -> create -> Created {}", newCountry.toString());
         if (isoExists(newCountry.getIso())) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", newCountry.getIso());
-            throw new ConflictException("Provided iso already exists in the database");
+            throw new BadRequestException("Provided iso already exists in the database");
         }
         return countryRepository.save(newCountry);
     }
@@ -72,7 +72,7 @@ public class CountryService {
         }
         if (isoExists(updatedCountry.getIso())) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
-            throw new ConflictException("Provided iso already exists in the database");
+            throw new BadRequestException("Provided iso already exists in the database");
         }
     }
 
@@ -85,12 +85,6 @@ public class CountryService {
 
     public void delete(int id) throws DemoException {
         findById(id);
-        /*
-        if (!personService.findAllByCountriesId(id).isEmpty()) {
-            LOGGER.error("CountryService -> DELETE -> Cannot delete country with id = {} cause of database references", id);
-            throw new BadRequestException("Cannot delete country with id = " + id + " cause of database references");
-        }
-        */
         countryRepository.deleteById(id);
         LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
     }

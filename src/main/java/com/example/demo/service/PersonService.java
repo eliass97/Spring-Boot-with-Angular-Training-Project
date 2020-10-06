@@ -40,19 +40,6 @@ public class PersonService {
         return resultDTO;
     }
 
-    /*
-    public List<PersonDTO> findAllByCountriesId(int id) {
-        Iterable<Person> result = personRepository.findAllByCountryId(id);
-        LinkedList<PersonDTO> resultDTO = new LinkedList<>();
-        for (Person person : result) {
-            resultDTO.add(new PersonDTO(person));
-            LOGGER.info(person.getFullName());
-        }
-        LOGGER.info("PersonService -> GET -> findAllByCountryId -> Searched for people by country id = {}", id);
-        return resultDTO;
-    }
-    */
-
     public PersonDTO findByIdDTO(int id) throws DemoException {
         Person result = findById(id);
         LOGGER.info("PersonService -> GET -> findByIdDTO -> Searched for id = {}", id);
