@@ -40,8 +40,12 @@ public class CountryService {
         return result.get();
     }
 
-    public Country create(Country newCountry) {
+    public Country create(Country newCountry) throws DemoException {
         LOGGER.info("CountryService -> POST -> create -> Created {}", newCountry.toString());
+        if (isoExists(newCountry.getIso())) {
+            LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", newCountry.getIso());
+            throw new ConflictException("Provided iso already exists in the database");
+        }
         return countryRepository.save(newCountry);
     }
 
@@ -66,6 +70,10 @@ public class CountryService {
             LOGGER.error("CountryService -> PUT -> update -> ConflictException for {}", updatedCountry);
             throw new ConflictException("Different country versions during update");
         }
+        if (isoExists(updatedCountry.getIso())) {
+            LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
+            throw new ConflictException("Provided iso already exists in the database");
+        }
     }
 
     private Country updateAndSaveInDatabase(Country updatedCountry, Country countryToBeUpdated) {
@@ -77,8 +85,23 @@ public class CountryService {
 
     public void delete(int id) throws DemoException {
         findById(id);
+        /*
+        if (!personService.findAllByCountriesId(id).isEmpty()) {
+            LOGGER.error("CountryService -> DELETE -> Cannot delete country with id = {} cause of database references", id);
+            throw new BadRequestException("Cannot delete country with id = " + id + " cause of database references");
+        }
+        */
         countryRepository.deleteById(id);
         LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
+    }
+
+    private boolean isoExists(String iso) {
+        try {
+            getCountryByIso(iso);
+        } catch (DemoException e) {
+            return false;
+        }
+        return true;
     }
 
     public Country getCountryByIso(String iso) throws DemoException {

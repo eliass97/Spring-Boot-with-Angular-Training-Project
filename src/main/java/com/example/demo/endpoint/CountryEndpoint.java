@@ -30,7 +30,7 @@ public class CountryEndpoint {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Country createCountry(@RequestBody Country newCountry) {
+    public Country createCountry(@RequestBody Country newCountry) throws DemoException{
         return CountryService.create(newCountry);
     }
 

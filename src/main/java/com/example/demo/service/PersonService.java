@@ -31,7 +31,7 @@ public class PersonService {
     }
 
     public List<PersonDTO> findAll() {
-        List<Person> result = personRepository.findAll();
+        Iterable<Person> result = personRepository.findAll();
         LinkedList<PersonDTO> resultDTO = new LinkedList<>();
         for (Person person : result) {
             resultDTO.add(new PersonDTO(person));
@@ -39,6 +39,19 @@ public class PersonService {
         LOGGER.info("PersonService -> GET -> findAll -> Searched for all");
         return resultDTO;
     }
+
+    /*
+    public List<PersonDTO> findAllByCountriesId(int id) {
+        Iterable<Person> result = personRepository.findAllByCountryId(id);
+        LinkedList<PersonDTO> resultDTO = new LinkedList<>();
+        for (Person person : result) {
+            resultDTO.add(new PersonDTO(person));
+            LOGGER.info(person.getFullName());
+        }
+        LOGGER.info("PersonService -> GET -> findAllByCountryId -> Searched for people by country id = {}", id);
+        return resultDTO;
+    }
+    */
 
     public PersonDTO findByIdDTO(int id) throws DemoException {
         Person result = findById(id);
