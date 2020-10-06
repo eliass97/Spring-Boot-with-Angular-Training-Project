@@ -56,29 +56,16 @@ public class PersonService {
         Country countryOfResidence = getCountryByIso(newPersonDTO.getCountryOfResidenceISO());
         Person newPerson = new Person(newPersonDTO, countryOfBirth, countryOfResidence);
         Person result = PersonRepository.save(newPerson);
-        LOGGER.info("PersonService -> POST -> create -> Created {}", newPersonDTO.toString());
+        LOGGER.info("PersonService -> POST -> create -> Created {}", newPersonDTO);
         return new PersonDTO(result);
     }
 
-    public PersonDTO update(int id, PersonDTO updatedPersonDTO) throws DemoException {
-        if (updatedPersonDTO.getId() != id && updatedPersonDTO.getId() != 0) {
-            LOGGER.error("PersonService -> updateChecks -> BadRequestException for path_id = {} and body_id = {}", id, updatedPersonDTO.getId());
-            throw new BadRequestException("Path ID variable does not match with body ID");
-        }
-        if (updatedPersonDTO.getLastUpdateDate() == null) {
-            LOGGER.error("CountryService -> PUT -> update -> BadRequestException");
-            throw new BadRequestException("LastUpdateDate was not provided in the request body");
-        }
-        PersonDTO personDTOFromDatabase = findById(id);
-        if (!updatedPersonDTO.getLastUpdateDate().equals(personDTOFromDatabase.getLastUpdateDate())) {
-            LOGGER.error("PersonService -> updateChecks -> ConflictException for {}", updatedPersonDTO.toString());
-            throw new ConflictException("Different country versions during update");
-        }
-        Country countryOfBirth = getCountryByIso(updatedPersonDTO.getCountryOfBirthISO());
-        Country countryOfResidence = getCountryByIso(updatedPersonDTO.getCountryOfResidenceISO());
-        Person result = PersonRepository.save(new Person(updatedPersonDTO, countryOfBirth, countryOfResidence));
+    public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
+        Person personToBeUpdated = PersonRepository.findById(pathId).get();
+        updateChecks(pathId, updatedPersonDTO, personToBeUpdated);
+        Person result = updateAndSaveInDatabase(updatedPersonDTO, personToBeUpdated);
         PersonDTO resultDTO = new PersonDTO(result);
-        LOGGER.info("PersonService -> PUT -> update -> Updated {}", resultDTO.toString());
+        LOGGER.info("PersonService -> PUT -> update -> Updated {}", resultDTO);
         return resultDTO;
     }
 
@@ -88,16 +75,44 @@ public class PersonService {
         LOGGER.info("PersonService -> DELETE -> delete -> Deleted person with id = {}", id);
     }
 
-    private Country getCountryByIso(String iso) throws DemoException {
+    public Country getCountryByIso(String iso) throws DemoException {
         if (iso == null) {
             LOGGER.error("PersonService -> getCountryByIso -> BadRequestException");
             throw new BadRequestException("Country ISO not provided");
         }
-        List<Country> retrievedCountries = (List<Country>) CountryRepository.findByIso(iso);
-        if (retrievedCountries.isEmpty()) {
+        List<Country> result = (List<Country>) CountryRepository.findByIso(iso);
+        if (result.isEmpty()) {
             LOGGER.error("PersonService -> getCountryByIso -> NotFoundException for iso = {}", iso);
             throw new NotFoundException("Country not found for iso = " + iso);
         }
-        return retrievedCountries.get(0);
+        return result.get(0);
+    }
+
+    private void updateChecks(int pathId, PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
+        if (updatedPersonDTO.getId() != pathId && updatedPersonDTO.getId() != 0) {
+            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedPersonDTO.getId());
+            throw new BadRequestException("Path ID variable does not match with body ID");
+        }
+        if (updatedPersonDTO.getLastUpdateDate() == null) {
+            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException");
+            throw new BadRequestException("LastUpdateDate was not provided in the request body");
+        }
+        if (!updatedPersonDTO.getLastUpdateDate().equals(personToBeUpdated.getLastUpdateDate())) {
+            LOGGER.error("PersonService -> update -> ConflictException for {}", updatedPersonDTO);
+            throw new ConflictException("Different country versions during update");
+        }
+    }
+
+    private Person updateAndSaveInDatabase(PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException{
+        Country countryOfBirth = getCountryByIso(updatedPersonDTO.getCountryOfBirthISO());
+        Country countryOfResidence = getCountryByIso(updatedPersonDTO.getCountryOfResidenceISO());
+        personToBeUpdated.setFullName(updatedPersonDTO.getFullName());
+        personToBeUpdated.setSex(updatedPersonDTO.getSex());
+        personToBeUpdated.setDateOfBirth(updatedPersonDTO.getDateOfBirth());
+        personToBeUpdated.setCountryOfBirth(countryOfBirth);
+        personToBeUpdated.setCountryOfResidence(countryOfResidence);
+        personToBeUpdated.setTelephone(updatedPersonDTO.getTelephone());
+        personToBeUpdated.setEmail(updatedPersonDTO.getEmail());
+        return PersonRepository.save(personToBeUpdated);
     }
 }

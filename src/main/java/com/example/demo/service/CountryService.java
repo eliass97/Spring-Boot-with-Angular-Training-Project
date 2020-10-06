@@ -45,31 +45,39 @@ public class CountryService {
         return CountryRepository.save(newCountry);
     }
 
-    public Country update(int id, Country updatedCountry) throws DemoException {
-        if (updatedCountry.getId() != id && updatedCountry.getId() != 0) {
-            LOGGER.error("CountryService -> PUT -> update -> BadRequestException for path_id = {} and body_id = {}", id, updatedCountry.getId());
-            throw new BadRequestException("Path ID variable does not match with body ID");
-        }
-        if (updatedCountry.getLastUpdateDate() == null) {
-            LOGGER.error("CountryService -> PUT -> update -> BadRequestException");
-            throw new BadRequestException("LastUpdateDate was not provided in the request body");
-        }
-        Country countryFromDatabase = findById(id);
-        if (!updatedCountry.getLastUpdateDate().equals(countryFromDatabase.getLastUpdateDate())) {
-            LOGGER.error("CountryService -> PUT -> update -> ConflictException for {}", updatedCountry.toString());
-            throw new ConflictException("Different country versions during update");
-        }
-        countryFromDatabase.setIso(updatedCountry.getIso());
-        countryFromDatabase.setDescription(updatedCountry.getDescription());
-        countryFromDatabase.setPrefix(updatedCountry.getPrefix());
-        Country result = CountryRepository.save(countryFromDatabase);
-        LOGGER.info("CountryService -> PUT -> update -> Updated {}", result.toString());
+    public Country update(int pathId, Country updatedCountry) throws DemoException {
+        Country countryToBeUpdated = findById(pathId);
+        updateChecks(pathId, updatedCountry, countryToBeUpdated);
+        Country result = updateAndSaveInDatabase(updatedCountry, countryToBeUpdated);
+        LOGGER.info("CountryService -> PUT -> update -> Updated {}", result);
         return result;
     }
 
     public void delete(int id) throws DemoException {
         findById(id);
-        LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
         CountryRepository.deleteById(id);
+        LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
+    }
+
+    private void updateChecks(int pathId, Country updatedCountry, Country countryFromDatabase) throws DemoException {
+        if (updatedCountry.getId() != pathId && updatedCountry.getId() != 0) {
+            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedCountry.getId());
+            throw new BadRequestException("Path ID variable does not match with body ID");
+        }
+        if (updatedCountry.getLastUpdateDate() == null) {
+            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException");
+            throw new BadRequestException("LastUpdateDate was not provided in the request body");
+        }
+        if (!updatedCountry.getLastUpdateDate().equals(countryFromDatabase.getLastUpdateDate())) {
+            LOGGER.error("CountryService -> PUT -> update -> ConflictException for {}", updatedCountry);
+            throw new ConflictException("Different country versions during update");
+        }
+    }
+
+    private Country updateAndSaveInDatabase(Country updatedCountry, Country countryToBeUpdated) {
+        countryToBeUpdated.setIso(updatedCountry.getIso());
+        countryToBeUpdated.setDescription(updatedCountry.getDescription());
+        countryToBeUpdated.setPrefix(updatedCountry.getPrefix());
+        return CountryRepository.save(countryToBeUpdated);
     }
 }
