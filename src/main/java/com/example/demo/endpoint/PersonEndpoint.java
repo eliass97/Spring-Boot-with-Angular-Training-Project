@@ -3,6 +3,8 @@ package com.example.demo.endpoint;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.model.PersonDTO;
 import com.example.demo.service.PersonService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,17 +40,20 @@ public class PersonEndpoint {
     }
 
     @PostMapping
+    @CachePut(value="persons", key = "#newPersonDTO.id")
     @ResponseStatus(HttpStatus.CREATED)
     public PersonDTO createPerson(@RequestBody PersonDTO newPersonDTO) throws DemoException {
         return personService.create(newPersonDTO);
     }
 
     @PutMapping("/{id}")
+    @CacheEvict(value = "persons", key = "#id")
     public PersonDTO updatePerson(@PathVariable int id, @RequestBody PersonDTO updatedPersonDTO) throws DemoException {
         return personService.update(id, updatedPersonDTO);
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(value = "persons", key = "#id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePerson(@PathVariable int id) throws DemoException {
         personService.delete(id);
