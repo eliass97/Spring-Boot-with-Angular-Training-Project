@@ -9,10 +9,12 @@ import com.example.demo.model.PersonDTO;
 import com.example.demo.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -30,11 +32,11 @@ public class PersonService {
 
     public List<PersonDTO> findAll() {
         Iterable<Person> result = personRepository.findAll();
+        LOGGER.info("PersonService -> GET -> findAll -> Searched for all");
         LinkedList<PersonDTO> resultDTO = new LinkedList<>();
         for (Person person : result) {
             resultDTO.add(new PersonDTO(person));
         }
-        LOGGER.info("PersonService -> GET -> findAll -> Searched for all");
         return resultDTO;
     }
 
@@ -47,18 +49,39 @@ public class PersonService {
     private Person findById(int id) throws DemoException {
         Optional<Person> result = personRepository.findById(id);
         if (result.isEmpty()) {
-            LOGGER.error("PersonService -> GET -> findById -> NotFoundException for id = {}", id);
+            LOGGER.error("PersonService -> GET -> findById -> NotFoundException -> id = {}", id);
             throw new NotFoundException("Person not found");
         }
         return result.get();
     }
 
+    public Page<PersonDTO> findPersonsByPage(int page, int size, String sortBy, Sort.Direction sortDirectionEnum) throws DemoException {
+        Pageable pageable;
+        if (sortBy == null && sortDirectionEnum == null) {
+            pageable = PageRequest.of(page, size);
+        } else if (sortBy == null) {
+            LOGGER.error("PersonService -> findCountriesByPage -> BadRequestException -> Provided sortDirection param without providing any sortBy param");
+            throw new BadRequestException("Provided sortDirection param without providing any sortBy param");
+        } else {
+            pageable = PageRequest.of(page, size, Objects.requireNonNullElse(sortDirectionEnum, Sort.Direction.ASC), sortBy);
+        }
+        Page<Person> result = personRepository.findAll(pageable);
+        LOGGER.info("PersonService -> GET -> Searched for page = {}, size = {}, sortBy = {}, sortDirection = {}", page, size, sortBy, sortDirectionEnum);
+        List<Person> personList = result.getContent();
+        LinkedList<PersonDTO> personDTOList = new LinkedList<>();
+        for (Person person : personList) {
+            personDTOList.add(new PersonDTO(person));
+        }
+        Page<PersonDTO> resultDTO = new PageImpl<>(personDTOList);
+        return resultDTO;
+    }
+
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {
         Country countryOfBirth = countryService.getCountryByIso(newPersonDTO.getCountryOfBirthISO());
         Country countryOfResidence = countryService.getCountryByIso(newPersonDTO.getCountryOfResidenceISO());
-        Person newPerson = personRepository.save(new Person(newPersonDTO, countryOfBirth, countryOfResidence));
-        LOGGER.info("PersonService -> POST -> create -> Created {}", newPerson);
-        return new PersonDTO(newPerson);
+        Person createdPerson = personRepository.save(new Person(newPersonDTO, countryOfBirth, countryOfResidence));
+        LOGGER.info("PersonService -> POST -> create -> Created {}", createdPerson);
+        return new PersonDTO(createdPerson);
     }
 
     public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
@@ -71,12 +94,12 @@ public class PersonService {
 
     private void updateChecks(int pathId, PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
         if (updatedPersonDTO.getId() != pathId && updatedPersonDTO.getId() != 0) {
-            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedPersonDTO.getId());
+            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedPersonDTO.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         personToBeUpdated.check(updatedPersonDTO.getLastUpdateDate());
         if (updatedPersonDTO.getCountryOfBirthISO() == null || updatedPersonDTO.getCountryOfResidenceISO() == null) {
-            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException");
+            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> Country ISO not provided");
             throw new BadRequestException("Country ISO not provided");
         }
     }

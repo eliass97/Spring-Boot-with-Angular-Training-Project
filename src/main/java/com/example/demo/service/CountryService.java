@@ -7,9 +7,14 @@ import com.example.demo.model.Country;
 import com.example.demo.repository.CountryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,26 +30,42 @@ public class CountryService {
 
     public List<Country> findAll() {
         LOGGER.info("CountryService -> GET -> Searched for all");
+        LOGGER.info("CountryService -> GET -> Searched for all");
         return countryRepository.findAll();
     }
 
     public Country findById(int id) throws DemoException {
         Optional<Country> result = countryRepository.findById(id);
+        LOGGER.info("CountryService -> GET -> findById -> Searched for id = {}", id);
         if (result.isEmpty()) {
-            LOGGER.error("CountryService -> GET -> findById -> NotFoundException for id = {}", id);
+            LOGGER.error("CountryService -> GET -> findById -> NotFoundException -> id = {}", id);
             throw new NotFoundException("Country not found");
         }
-        LOGGER.info("CountryService -> GET -> findById -> Searched for id = {}", id);
         return result.get();
     }
 
+    public Page<Country> findCountriesByPage(int page, int size, String sortBy, Sort.Direction sortDirectionEnum) throws DemoException {
+        Pageable pageable;
+        if (sortBy == null && sortDirectionEnum == null) {
+            pageable = PageRequest.of(page, size);
+        } else if (sortBy == null) {
+            LOGGER.error("CountryService -> findCountriesByPage -> BadRequestException -> Provided sortDirection param without providing any sortBy param");
+            throw new BadRequestException("Provided sortDirection param without providing any sortBy param");
+        } else {
+            pageable = PageRequest.of(page, size, Objects.requireNonNullElse(sortDirectionEnum, Sort.Direction.ASC), sortBy);
+        }
+        LOGGER.info("CountryService -> GET -> Searched for page = {}, size = {}, sortBy = {}, sortDirection = {}", page, size, sortBy, sortDirectionEnum);
+        return countryRepository.findAll(pageable);
+    }
+
     public Country create(Country newCountry) throws DemoException {
-        LOGGER.info("CountryService -> POST -> create -> Created {}", newCountry.toString());
         if (isoExistsInDatabase(newCountry.getIso())) {
-            LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", newCountry.getIso());
+            LOGGER.error("CountryService -> PUT -> updateChecks -> BadRequestException -> Provided iso = {} already exists in the database", newCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");
         }
-        return countryRepository.save(newCountry);
+        Country createdCountry = countryRepository.save(newCountry);
+        LOGGER.info("CountryService -> POST -> create -> Created {}", newCountry.toString());
+        return createdCountry;
     }
 
     public Country update(int pathId, Country updatedCountry) throws DemoException {
@@ -57,12 +78,12 @@ public class CountryService {
 
     private void updateChecks(int pathId, Country updatedCountry, Country countryToBeUpdated) throws DemoException {
         if (updatedCountry.getId() != pathId && updatedCountry.getId() != 0) {
-            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException for path_id = {} and body_id = {}", pathId, updatedCountry.getId());
+            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedCountry.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         countryToBeUpdated.check(updatedCountry.getLastUpdateDate());
         if (isoExistsInDatabase(updatedCountry.getIso()) && getCountryByIso(updatedCountry.getIso()).getId() != pathId) {
-            LOGGER.error("CountryService -> PUT -> updateChecks -> Provided iso = {} already exists in the database", updatedCountry.getIso());
+            LOGGER.error("CountryService -> PUT -> updateChecks -> BadRequestException -> Provided iso = {} already exists in the database", updatedCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");
         }
     }
