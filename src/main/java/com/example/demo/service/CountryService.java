@@ -8,13 +8,10 @@ import com.example.demo.repository.CountryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -44,18 +41,9 @@ public class CountryService {
         return result.get();
     }
 
-    public Page<Country> findCountriesByPage(int page, int size, String sortBy, Sort.Direction sortDirectionEnum) throws DemoException {
-        Pageable pageable;
-        if (sortBy == null && sortDirectionEnum == null) {
-            pageable = PageRequest.of(page, size);
-        } else if (sortBy == null) {
-            LOGGER.error("CountryService -> findCountriesByPage -> BadRequestException -> Provided sortDirection param without providing any sortBy param");
-            throw new BadRequestException("Provided sortDirection param without providing any sortBy param");
-        } else {
-            pageable = PageRequest.of(page, size, Objects.requireNonNullElse(sortDirectionEnum, Sort.Direction.ASC), sortBy);
-        }
-        LOGGER.info("CountryService -> GET -> Searched for page = {}, size = {}, sortBy = {}, sortDirection = {}", page, size, sortBy, sortDirectionEnum);
-        return countryRepository.findAll(pageable);
+    public Page<Country> findCountriesByPage(Pageable pageableRequest) {
+        LOGGER.info("Searched for page = {} and size = {}", pageableRequest.getPageNumber(), pageableRequest.getPageSize());
+        return countryRepository.findAll(pageableRequest);
     }
 
     public Country create(Country newCountry) throws DemoException {

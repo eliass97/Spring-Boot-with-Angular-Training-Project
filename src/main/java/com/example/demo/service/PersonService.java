@@ -9,12 +9,12 @@ import com.example.demo.model.PersonDTO;
 import com.example.demo.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -55,25 +55,9 @@ public class PersonService {
         return result.get();
     }
 
-    public Page<PersonDTO> findPersonsByPage(int page, int size, String sortBy, Sort.Direction sortDirectionEnum) throws DemoException {
-        Pageable pageable;
-        if (sortBy == null && sortDirectionEnum == null) {
-            pageable = PageRequest.of(page, size);
-        } else if (sortBy == null) {
-            LOGGER.error("PersonService -> findCountriesByPage -> BadRequestException -> Provided sortDirection param without providing any sortBy param");
-            throw new BadRequestException("Provided sortDirection param without providing any sortBy param");
-        } else {
-            pageable = PageRequest.of(page, size, Objects.requireNonNullElse(sortDirectionEnum, Sort.Direction.ASC), sortBy);
-        }
-        Page<Person> result = personRepository.findAll(pageable);
-        LOGGER.info("PersonService -> GET -> Searched for page = {}, size = {}, sortBy = {}, sortDirection = {}", page, size, sortBy, sortDirectionEnum);
-        List<Person> personList = result.getContent();
-        LinkedList<PersonDTO> personDTOList = new LinkedList<>();
-        for (Person person : personList) {
-            personDTOList.add(new PersonDTO(person));
-        }
-        Page<PersonDTO> resultDTO = new PageImpl<>(personDTOList);
-        return resultDTO;
+    public Page<PersonDTO> findPersonsByPage(Pageable pageableRequest) {
+        LOGGER.info("Searched for page = {} and size = {}", pageableRequest.getPageNumber(), pageableRequest.getPageSize());
+        return null;
     }
 
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {

@@ -4,7 +4,7 @@ import com.example.demo.exceptions.DemoException;
 import com.example.demo.model.Country;
 import com.example.demo.service.CountryService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +31,8 @@ public class CountryEndpoint {
     }
 
     @GetMapping("/page")
-    public Page<Country> getCountriesByPage(@RequestParam(name = "page") int page, @RequestParam(name = "size") int size, @RequestParam(name = "sortBy", required = false) String sortBy, @RequestParam(name = "sortDirection", required = false) String sortDirection) throws DemoException {
-        Sort.Direction sortDirectionEnum;
-        if (sortDirection == null) {
-            sortDirectionEnum = null;
-        } else {
-            sortDirectionEnum = Sort.Direction.valueOf(sortDirection.toUpperCase());
-        }
-        return countryService.findCountriesByPage(page, size, sortBy, sortDirectionEnum);
+    public Page<Country> getCountriesByPage(Pageable pageableRequest) {
+        return countryService.findCountriesByPage(pageableRequest);
     }
 
     @PostMapping
