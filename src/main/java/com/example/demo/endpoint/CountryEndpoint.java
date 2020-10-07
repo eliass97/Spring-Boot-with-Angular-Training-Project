@@ -3,6 +3,7 @@ package com.example.demo.endpoint;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.model.Country;
 import com.example.demo.service.CountryService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class CountryEndpoint {
     }
 
     @GetMapping("/{id}")
+    @Cacheable("countries")
     public Country getCountryById(@PathVariable("id") int id) throws DemoException {
         return countryService.findById(id);
     }

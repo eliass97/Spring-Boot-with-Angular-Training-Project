@@ -3,6 +3,7 @@ package com.example.demo.endpoint;
 import com.example.demo.exceptions.DemoException;
 import com.example.demo.model.PersonDTO;
 import com.example.demo.service.PersonService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class PersonEndpoint {
     }
 
     @GetMapping("/{id}")
+    @Cacheable("persons")
     public PersonDTO getPersonById(@PathVariable("id") int id) throws DemoException {
         return personService.findByIdDTO(id);
     }
