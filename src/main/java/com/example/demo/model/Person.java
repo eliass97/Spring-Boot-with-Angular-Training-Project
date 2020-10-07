@@ -52,8 +52,8 @@ public class Person extends DemoObject {
         this.email = email;
     }
 
-    public Person(PersonDTO persondto, Country countryOfBirth, Country countryOfResidence) {
-        this(persondto.getId(), persondto.getFullName(), persondto.getDateOfBirth(), persondto.getSex(), countryOfBirth, countryOfResidence, persondto.getTelephone(), persondto.getEmail(), persondto.getLastUpdateDate());
+    public Person(PersonDTO personDTO, Country countryOfBirth, Country countryOfResidence) {
+        this(personDTO.getId(), personDTO.getFullName(), personDTO.getDateOfBirth(), personDTO.getSex(), countryOfBirth, countryOfResidence, personDTO.getTelephone(), personDTO.getEmail(), personDTO.getLastUpdateDate());
     }
 
     public int getId() {

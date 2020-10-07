@@ -35,7 +35,7 @@ public class PersonService {
         LOGGER.info("PersonService -> GET -> findAll -> Searched for all");
         LinkedList<PersonDTO> resultDTO = new LinkedList<>();
         for (Person person : result) {
-            resultDTO.add(new PersonDTO(person));
+            resultDTO.add(PersonDTO.mapper(person));
         }
         return resultDTO;
     }
@@ -43,7 +43,7 @@ public class PersonService {
     public PersonDTO findByIdDTO(int id) throws DemoException {
         Person result = findById(id);
         LOGGER.info("PersonService -> GET -> findByIdDTO -> Searched for id = {}", id);
-        return new PersonDTO(result);
+        return PersonDTO.mapper(result);
     }
 
     private Person findById(int id) throws DemoException {
@@ -57,15 +57,16 @@ public class PersonService {
 
     public Page<PersonDTO> findPersonsByPage(Pageable pageableRequest) {
         LOGGER.info("Searched for page = {} and size = {}", pageableRequest.getPageNumber(), pageableRequest.getPageSize());
-        return null;
+        Page<Person> result = personRepository.findAll(pageableRequest);
+        return result.map(PersonDTO::mapper);
     }
 
     public PersonDTO create(PersonDTO newPersonDTO) throws DemoException {
-        Country countryOfBirth = countryService.getCountryByIso(newPersonDTO.getCountryOfBirthISO());
-        Country countryOfResidence = countryService.getCountryByIso(newPersonDTO.getCountryOfResidenceISO());
+        Country countryOfBirth = countryService.getCountryByIso(newPersonDTO.getCountryOfBirth());
+        Country countryOfResidence = countryService.getCountryByIso(newPersonDTO.getCountryOfResidence());
         Person createdPerson = personRepository.save(new Person(newPersonDTO, countryOfBirth, countryOfResidence));
         LOGGER.info("PersonService -> POST -> create -> Created {}", createdPerson);
-        return new PersonDTO(createdPerson);
+        return PersonDTO.mapper(createdPerson);
     }
 
     public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
@@ -73,7 +74,7 @@ public class PersonService {
         updateChecks(pathId, updatedPersonDTO, personToBeUpdated);
         Person updatedPerson = updateAndSaveInDatabase(updatedPersonDTO, personToBeUpdated);
         LOGGER.info("PersonService -> PUT -> update -> Updated {}", updatedPerson);
-        return new PersonDTO(updatedPerson);
+        return PersonDTO.mapper(updatedPerson);
     }
 
     private void updateChecks(int pathId, PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
@@ -82,15 +83,15 @@ public class PersonService {
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         personToBeUpdated.check(updatedPersonDTO.getLastUpdateDate());
-        if (updatedPersonDTO.getCountryOfBirthISO() == null || updatedPersonDTO.getCountryOfResidenceISO() == null) {
+        if (updatedPersonDTO.getCountryOfBirth() == null || updatedPersonDTO.getCountryOfResidence() == null) {
             LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> Country ISO not provided");
             throw new BadRequestException("Country ISO not provided");
         }
     }
 
     private Person updateAndSaveInDatabase(PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
-        Country countryOfBirth = countryService.getCountryByIso(updatedPersonDTO.getCountryOfBirthISO());
-        Country countryOfResidence = countryService.getCountryByIso(updatedPersonDTO.getCountryOfResidenceISO());
+        Country countryOfBirth = countryService.getCountryByIso(updatedPersonDTO.getCountryOfBirth());
+        Country countryOfResidence = countryService.getCountryByIso(updatedPersonDTO.getCountryOfResidence());
         personToBeUpdated.setFullName(updatedPersonDTO.getFullName());
         personToBeUpdated.setSex(updatedPersonDTO.getSex());
         personToBeUpdated.setDateOfBirth(updatedPersonDTO.getDateOfBirth());

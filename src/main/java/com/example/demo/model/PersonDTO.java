@@ -9,8 +9,8 @@ public class PersonDTO {
     private String fullName;
     private LocalDate dateOfBirth;
     private String sex;
-    private String countryOfBirthISO;
-    private String countryOfResidenceISO;
+    private String countryOfBirth;
+    private String countryOfResidence;
     private String telephone;
     private String email;
     private Timestamp lastUpdateDate;
@@ -19,20 +19,16 @@ public class PersonDTO {
 
     }
 
-    public PersonDTO(int id, String fullName, LocalDate dateOfBirth, String sex, String countryOfBirthISO, String countryOfResidenceISO, String telephone, String email, Timestamp lastUpdateDate) {
+    public PersonDTO(int id, String fullName, LocalDate dateOfBirth, String sex, String countryOfBirth, String countryOfResidence, String telephone, String email, Timestamp lastUpdateDate) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
         this.sex = sex;
-        this.countryOfBirthISO = countryOfBirthISO;
-        this.countryOfResidenceISO = countryOfResidenceISO;
+        this.countryOfBirth = countryOfBirth;
+        this.countryOfResidence = countryOfResidence;
         this.telephone = telephone;
         this.email = email;
         this.lastUpdateDate = lastUpdateDate;
-    }
-
-    public PersonDTO(Person person) {
-        this(person.getId(), person.getFullName(), person.getDateOfBirth(), person.getSex(), person.getCountryOfBirth().getIso(), person.getCountryOfResidence().getIso(), person.getTelephone(), person.getEmail(), person.getLastUpdateDate());
     }
 
     public Timestamp getLastUpdateDate() {
@@ -67,20 +63,20 @@ public class PersonDTO {
         return email;
     }
 
-    public String getCountryOfBirthISO() {
-        return countryOfBirthISO;
+    public String getCountryOfBirth() {
+        return countryOfBirth;
     }
 
-    public String getCountryOfResidenceISO() {
-        return countryOfResidenceISO;
+    public String getCountryOfResidence() {
+        return countryOfResidence;
     }
 
-    public void setCountryOfBirthISO(String countryOfBirthISO) {
-        this.countryOfBirthISO = countryOfBirthISO;
+    public void setCountryOfBirth(String countryOfBirth) {
+        this.countryOfBirth = countryOfBirth;
     }
 
-    public void setCountryOfResidenceISO(String countryOfResidenceISO) {
-        this.countryOfResidenceISO = countryOfResidenceISO;
+    public void setCountryOfResidence(String countryOfResidence) {
+        this.countryOfResidence = countryOfResidence;
     }
 
     public void setId(int id) {
@@ -109,6 +105,10 @@ public class PersonDTO {
 
     @Override
     public String toString() {
-        return "Person: [" + id + ", " + fullName + ", " + dateOfBirth + ", " + sex + ", " + countryOfBirthISO + ", " + countryOfResidenceISO + ", " + telephone + ", " + email + ", " + lastUpdateDate + "]";
+        return "Person: [" + id + ", " + fullName + ", " + dateOfBirth + ", " + sex + ", " + countryOfBirth + ", " + countryOfResidence + ", " + telephone + ", " + email + ", " + lastUpdateDate + "]";
+    }
+
+    public static PersonDTO mapper(Person person) {
+        return new PersonDTO(person.getId(), person.getFullName(), person.getDateOfBirth(), person.getSex(), person.getCountryOfBirth().getIso(), person.getCountryOfResidence().getIso(), person.getTelephone(), person.getEmail(), person.getLastUpdateDate());
     }
 }
