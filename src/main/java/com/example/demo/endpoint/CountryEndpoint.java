@@ -19,8 +19,8 @@ public class CountryEndpoint {
 
     private final CountryService countryService;
 
-    public CountryEndpoint(CountryService CountryService) {
-        this.countryService = CountryService;
+    public CountryEndpoint(CountryService countryService) {
+        this.countryService = countryService;
     }
 
     @GetMapping
@@ -40,7 +40,7 @@ public class CountryEndpoint {
     }
 
     @PostMapping
-    @CachePut(value="countries", key = "#newCountry.id")
+    @CachePut(value = "countries", key = "#newCountry.id")
     @ResponseStatus(HttpStatus.CREATED)
     public Country createCountry(@RequestBody Country newCountry) throws DemoException {
         return countryService.create(newCountry);
@@ -48,14 +48,14 @@ public class CountryEndpoint {
 
     @PutMapping("/{id}")
     @CacheEvict(value = "countries", key = "#id")
-    public Country updateCountry(@PathVariable int id, @RequestBody Country updatedCountry) throws DemoException {
+    public Country updateCountry(@PathVariable("id") int id, @RequestBody Country updatedCountry) throws DemoException {
         return countryService.update(id, updatedCountry);
     }
 
     @DeleteMapping("/{id}")
     @CacheEvict(value = "countries", key = "#id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCountry(@PathVariable int id) throws DemoException {
+    public void deleteCountry(@PathVariable("id") int id) throws DemoException {
         countryService.delete(id);
     }
 }

@@ -19,8 +19,8 @@ public class PersonEndpoint {
 
     private final PersonService personService;
 
-    public PersonEndpoint(PersonService PersonService) {
-        this.personService = PersonService;
+    public PersonEndpoint(PersonService personService) {
+        this.personService = personService;
     }
 
     @GetMapping
@@ -40,7 +40,7 @@ public class PersonEndpoint {
     }
 
     @PostMapping
-    @CachePut(value="persons", key = "#newPersonDTO.id")
+    @CachePut(value = "persons", key = "#newPersonDTO.id")
     @ResponseStatus(HttpStatus.CREATED)
     public PersonDTO createPerson(@RequestBody PersonDTO newPersonDTO) throws DemoException {
         return personService.create(newPersonDTO);
@@ -48,14 +48,14 @@ public class PersonEndpoint {
 
     @PutMapping("/{id}")
     @CacheEvict(value = "persons", key = "#id")
-    public PersonDTO updatePerson(@PathVariable int id, @RequestBody PersonDTO updatedPersonDTO) throws DemoException {
+    public PersonDTO updatePerson(@PathVariable("id") int id, @RequestBody PersonDTO updatedPersonDTO) throws DemoException {
         return personService.update(id, updatedPersonDTO);
     }
 
     @DeleteMapping("/{id}")
     @CacheEvict(value = "persons", key = "#id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePerson(@PathVariable int id) throws DemoException {
+    public void deletePerson(@PathVariable("id") int id) throws DemoException {
         personService.delete(id);
     }
 }

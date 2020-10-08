@@ -21,8 +21,8 @@ public class CountryService {
 
     private final CountryRepository countryRepository;
 
-    public CountryService(CountryRepository CountryRepository) {
-        this.countryRepository = CountryRepository;
+    public CountryService(CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
     }
 
     public List<Country> findAll() {
