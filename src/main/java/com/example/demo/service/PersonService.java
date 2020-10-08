@@ -107,4 +107,8 @@ public class PersonService {
         personRepository.deleteById(id);
         LOGGER.info("PersonService -> DELETE -> delete -> Deleted person with id = {}", id);
     }
+
+    public long getNumberOfPersons() {
+        return personRepository.count();
+    }
 }

@@ -105,4 +105,8 @@ public class CountryService {
         }
         return result.get();
     }
+
+    public long getNumberOfCountries() {
+        return countryRepository.count();
+    }
 }
