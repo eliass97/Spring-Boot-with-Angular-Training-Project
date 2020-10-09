@@ -27,7 +27,6 @@ public class CountryService {
 
     public List<Country> findAll() {
         LOGGER.info("CountryService -> GET -> Searched for all");
-        LOGGER.info("CountryService -> GET -> Searched for all");
         return countryRepository.findAll();
     }
 

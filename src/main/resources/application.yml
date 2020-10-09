@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: postgres
+    password: 0987poiu
+  main:
+    banner-mode: off
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            tablePrefix: qrtz_
+            isClustered: true
+          scheduler:
+            instanceName: demo-scheduler
+            instanceId: AUTO
+logging:
+  file:
+    path: C:/Users/isett/IdeaProjects/training-logs/demo-application.log
