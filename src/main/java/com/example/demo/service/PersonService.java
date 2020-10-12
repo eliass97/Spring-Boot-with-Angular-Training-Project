@@ -46,7 +46,7 @@ public class PersonService {
         return PersonDTO.mapper(result);
     }
 
-    private Person findById(int id) throws DemoException {
+    public Person findById(int id) throws DemoException {
         Optional<Person> result = personRepository.findById(id);
         if (result.isEmpty()) {
             LOGGER.error("PersonService -> GET -> findById -> NotFoundException -> id = {}", id);
@@ -70,19 +70,19 @@ public class PersonService {
     }
 
     public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
+        updateChecks(pathId, updatedPersonDTO);
         Person personToBeUpdated = findById(pathId);
-        updateChecks(pathId, updatedPersonDTO, personToBeUpdated);
+        personToBeUpdated.check(updatedPersonDTO.getLastUpdateDate());
         Person updatedPerson = updateAndSaveInDatabase(updatedPersonDTO, personToBeUpdated);
         LOGGER.info("PersonService -> PUT -> update -> Updated {}", updatedPerson);
         return PersonDTO.mapper(updatedPerson);
     }
 
-    private void updateChecks(int pathId, PersonDTO updatedPersonDTO, Person personToBeUpdated) throws DemoException {
+    private void updateChecks(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
         if (updatedPersonDTO.getId() != pathId && updatedPersonDTO.getId() != 0) {
             LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedPersonDTO.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
-        personToBeUpdated.check(updatedPersonDTO.getLastUpdateDate());
         if (updatedPersonDTO.getCountryOfBirth() == null || updatedPersonDTO.getCountryOfResidence() == null) {
             LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> Country ISO not provided");
             throw new BadRequestException("Country ISO not provided");

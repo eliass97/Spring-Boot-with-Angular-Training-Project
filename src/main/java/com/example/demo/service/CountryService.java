@@ -56,19 +56,19 @@ public class CountryService {
     }
 
     public Country update(int pathId, Country updatedCountry) throws DemoException {
+        updateChecks(pathId, updatedCountry);
         Country countryToBeUpdated = findById(pathId);
-        updateChecks(pathId, updatedCountry, countryToBeUpdated);
+        countryToBeUpdated.check(updatedCountry.getLastUpdateDate());
         Country result = updateAndSaveInDatabase(updatedCountry, countryToBeUpdated);
         LOGGER.info("CountryService -> PUT -> update -> Updated {}", result);
         return result;
     }
 
-    private void updateChecks(int pathId, Country updatedCountry, Country countryToBeUpdated) throws DemoException {
+    private void updateChecks(int pathId, Country updatedCountry) throws DemoException {
         if (updatedCountry.getId() != pathId && updatedCountry.getId() != 0) {
             LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedCountry.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
-        countryToBeUpdated.check(updatedCountry.getLastUpdateDate());
         if (isoExistsInDatabase(updatedCountry.getIso()) && getCountryByIso(updatedCountry.getIso()).getId() != pathId) {
             LOGGER.error("CountryService -> PUT -> updateChecks -> BadRequestException -> Provided iso = {} already exists in the database", updatedCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");

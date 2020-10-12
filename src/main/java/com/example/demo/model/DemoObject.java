@@ -35,7 +35,7 @@ public abstract class DemoObject {
         }
         if (!lastUpdateDate.equals(otherLastUpdateDate)) {
             LOGGER.error("DemoObject -> versionChecks -> ConflictException");
-            throw new ConflictException("Different country versions during update");
+            throw new ConflictException("Different versions detected");
         }
     }
 }

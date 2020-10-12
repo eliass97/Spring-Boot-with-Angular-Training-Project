@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class PersonDTO {
 
@@ -110,5 +111,37 @@ public class PersonDTO {
 
     public static PersonDTO mapper(Person person) {
         return new PersonDTO(person.getId(), person.getFullName(), person.getDateOfBirth(), person.getSex(), person.getCountryOfBirth().getIso(), person.getCountryOfResidence().getIso(), person.getTelephone(), person.getEmail(), person.getLastUpdateDate());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        final PersonDTO other = (PersonDTO) obj;
+        if (this.getId() != other.getId()) {
+            return false;
+        } else if (!Objects.equals(this.getFullName(), other.getFullName())) {
+            return false;
+        } else if (!Objects.equals(this.getDateOfBirth(), other.getDateOfBirth())) {
+            return false;
+        } else if (!Objects.equals(this.getSex(), other.getSex())) {
+            return false;
+        } else if (!Objects.equals(this.getCountryOfBirth(), other.getCountryOfBirth())) {
+            return false;
+        } else if (!Objects.equals(this.getCountryOfResidence(), other.getCountryOfResidence())) {
+            return false;
+        } else if (!Objects.equals(this.getEmail(), other.getEmail())) {
+            return false;
+        } else if (!Objects.equals(this.getTelephone(), other.getTelephone())) {
+            return false;
+        } else if (!Objects.equals(this.getLastUpdateDate(), other.getLastUpdateDate())) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
