@@ -66,6 +66,58 @@ public class PersonServiceTests {
     }
 
     @Test
+    public void createWhenCountryOfBirthDoesNotExist() throws DemoException {
+        when(countryServiceMock.getCountryByIso(updatedPersonDTO.getCountryOfBirth())).thenThrow(new NotFoundException());
+
+        try {
+            personService.create(updatedPersonDTO);
+        } catch (NotFoundException ex) {
+            Assert.assertTrue(true);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(countryServiceMock).getCountryByIso(updatedPersonDTO.getCountryOfBirth());
+        verifyNoInteractions(personRepositoryMock);
+        verifyNoMoreInteractions(countryServiceMock);
+    }
+
+    @Test
+    public void createWhenCountryOfResidenceDoesNotExist() throws DemoException {
+        when(countryServiceMock.getCountryByIso(updatedPersonDTO.getCountryOfBirth())).thenReturn(countryOfBirthNew);
+        when(countryServiceMock.getCountryByIso(updatedPersonDTO.getCountryOfResidence())).thenThrow(new NotFoundException());
+
+        try {
+            personService.create(updatedPersonDTO);
+        } catch (NotFoundException ex) {
+            Assert.assertTrue(true);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(countryServiceMock).getCountryByIso(updatedPersonDTO.getCountryOfBirth());
+        verify(countryServiceMock).getCountryByIso(updatedPersonDTO.getCountryOfResidence());
+        verifyNoInteractions(personRepositoryMock);
+        verifyNoMoreInteractions(countryServiceMock);
+    }
+
+    @Test
+    public void createWhenHappyEnding() throws DemoException {
+        when(countryServiceMock.getCountryByIso(updatedPersonDTO.getCountryOfBirth())).thenReturn(countryOfBirthNew);
+        when(countryServiceMock.getCountryByIso(updatedPersonDTO.getCountryOfResidence())).thenReturn(countryOfResidenceNew);
+        when(personRepositoryMock.save(any(Person.class))).thenReturn(personAfterSave);
+
+        PersonDTO result = personService.create(updatedPersonDTO);
+        Assert.assertEquals(result, PersonDTO.mapper(personAfterSave));
+
+        verify(countryServiceMock).getCountryByIso(updatedPersonDTO.getCountryOfBirth());
+        verify(countryServiceMock).getCountryByIso(updatedPersonDTO.getCountryOfResidence());
+        verify(personRepositoryMock).save(any(Person.class));
+        verifyNoMoreInteractions(personRepositoryMock);
+        verifyNoMoreInteractions(countryServiceMock);
+    }
+
+    @Test
     public void updateWhenPathIdDifferentThanBodyIdThrowBadRequestException() {
         try {
             personService.update(pathIdInvalid, updatedPersonDTO);
@@ -93,6 +145,23 @@ public class PersonServiceTests {
 
         verifyNoInteractions(countryServiceMock);
         verifyNoInteractions(personRepositoryMock);
+    }
+
+    @Test
+    public void updateWhenPathIdDoesNotExistInDatabase() {
+        when(personRepositoryMock.findById(pathId)).thenReturn(Optional.empty());
+
+        try {
+            personService.update(pathId, updatedPersonDTO);
+        } catch (NotFoundException ex) {
+            Assert.assertTrue(true);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(personRepositoryMock).findById(pathId);
+        verifyNoInteractions(countryServiceMock);
+        verifyNoMoreInteractions(personRepositoryMock);
     }
 
     @Test
@@ -189,5 +258,36 @@ public class PersonServiceTests {
         verify(personRepositoryMock).save(personRetrievedByDatabase);
         verifyNoMoreInteractions(personRepositoryMock);
         verifyNoMoreInteractions(countryServiceMock);
+    }
+
+    @Test
+    public void deleteWhenPathIdDoesNotExistInDatabase() {
+        when(personRepositoryMock.findById(pathId)).thenReturn(Optional.empty());
+
+        try {
+            personService.delete(pathId);
+        } catch (NotFoundException ex) {
+            Assert.assertTrue(true);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(personRepositoryMock).findById(pathId);
+        verifyNoMoreInteractions(personRepositoryMock);
+    }
+
+    @Test
+    public void deleteWhenHappyEnding() {
+        when(personRepositoryMock.findById(pathId)).thenReturn(Optional.of(personRetrievedByDatabase));
+
+        try {
+            personService.delete(pathId);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(personRepositoryMock).findById(pathId);
+        verify(personRepositoryMock).deleteById(pathId);
+        verifyNoMoreInteractions(personRepositoryMock);
     }
 }
