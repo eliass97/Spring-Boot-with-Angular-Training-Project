@@ -50,6 +50,33 @@ public class CountryServiceTests {
     }
 
     @Test
+    public void findByIdWhenItDoesNotExist() {
+        when(countryRepositoryMock.findById(pathId)).thenReturn(Optional.empty());
+
+        try {
+            countryService.findById(pathId);
+        } catch (NotFoundException ex) {
+            Assert.assertTrue(true);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(countryRepositoryMock).findById(pathId);
+        verifyNoMoreInteractions(countryRepositoryMock);
+    }
+
+    @Test
+    public void findByIdWhenHappyEnding() throws DemoException {
+        when(countryRepositoryMock.findById(pathId)).thenReturn(Optional.of(countryRetrievedByDatabase));
+
+        Country result = countryService.findById(pathId);
+        Assert.assertEquals(result, countryRetrievedByDatabase);
+
+        verify(countryRepositoryMock).findById(pathId);
+        verifyNoMoreInteractions(countryRepositoryMock);
+    }
+
+    @Test
     public void createWhenIsoExistsInDatabase() {
         countryRetrievedByDatabase.setIso(updatedCountry.getIso());
 

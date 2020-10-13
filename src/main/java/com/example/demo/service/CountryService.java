@@ -41,8 +41,9 @@ public class CountryService {
     }
 
     public Page<Country> findCountriesByPage(Pageable pageableRequest) {
+        Page<Country> result = countryRepository.findAll(pageableRequest);
         LOGGER.info("Searched for page = {} and size = {}", pageableRequest.getPageNumber(), pageableRequest.getPageSize());
-        return countryRepository.findAll(pageableRequest);
+        return result;
     }
 
     public Country create(Country newCountry) throws DemoException {
@@ -88,7 +89,7 @@ public class CountryService {
         LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
     }
 
-    public boolean isoExistsInDatabase(String iso) {
+    private boolean isoExistsInDatabase(String iso) {
         try {
             getCountryByIso(iso);
         } catch (DemoException e) {

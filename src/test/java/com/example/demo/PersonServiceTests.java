@@ -66,6 +66,33 @@ public class PersonServiceTests {
     }
 
     @Test
+    public void findByIdWhenItDoesNotExist() {
+        when(personRepositoryMock.findById(pathId)).thenReturn(Optional.empty());
+
+        try {
+            personService.findById(pathId);
+        } catch (NotFoundException ex) {
+            Assert.assertTrue(true);
+        } catch (DemoException ex) {
+            Assert.fail();
+        }
+
+        verify(personRepositoryMock).findById(pathId);
+        verifyNoMoreInteractions(personRepositoryMock);
+    }
+
+    @Test
+    public void findByIdWhenHappyEnding() throws DemoException {
+        when(personRepositoryMock.findById(pathId)).thenReturn(Optional.of(personRetrievedByDatabase));
+
+        PersonDTO result = personService.findById(pathId);
+        Assert.assertEquals(result, PersonDTO.mapper(personRetrievedByDatabase));
+
+        verify(personRepositoryMock).findById(pathId);
+        verifyNoMoreInteractions(personRepositoryMock);
+    }
+
+    @Test
     public void createWhenCountryOfBirthDoesNotExist() throws DemoException {
         when(countryServiceMock.getCountryByIso(updatedPersonDTO.getCountryOfBirth())).thenThrow(new NotFoundException());
 

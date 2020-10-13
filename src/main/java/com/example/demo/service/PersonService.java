@@ -40,13 +40,13 @@ public class PersonService {
         return resultDTO;
     }
 
-    public PersonDTO findByIdDTO(int id) throws DemoException {
-        Person result = findById(id);
+    public PersonDTO findById(int id) throws DemoException {
+        Person result = findByIdFullPerson(id);
         LOGGER.info("PersonService -> GET -> findByIdDTO -> Searched for id = {}", id);
         return PersonDTO.mapper(result);
     }
 
-    public Person findById(int id) throws DemoException {
+    private Person findByIdFullPerson(int id) throws DemoException {
         Optional<Person> result = personRepository.findById(id);
         if (result.isEmpty()) {
             LOGGER.error("PersonService -> GET -> findById -> NotFoundException -> id = {}", id);
@@ -56,8 +56,8 @@ public class PersonService {
     }
 
     public Page<PersonDTO> findPersonsByPage(Pageable pageableRequest) {
-        LOGGER.info("Searched for page = {} and size = {}", pageableRequest.getPageNumber(), pageableRequest.getPageSize());
         Page<Person> result = personRepository.findAll(pageableRequest);
+        LOGGER.info("Searched for page = {} and size = {}", pageableRequest.getPageNumber(), pageableRequest.getPageSize());
         return result.map(PersonDTO::mapper);
     }
 
@@ -71,7 +71,7 @@ public class PersonService {
 
     public PersonDTO update(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
         updateChecks(pathId, updatedPersonDTO);
-        Person personToBeUpdated = findById(pathId);
+        Person personToBeUpdated = findByIdFullPerson(pathId);
         personToBeUpdated.check(updatedPersonDTO.getLastUpdateDate());
         Person updatedPerson = updateAndSaveInDatabase(updatedPersonDTO, personToBeUpdated);
         LOGGER.info("PersonService -> PUT -> update -> Updated {}", updatedPerson);
@@ -103,7 +103,7 @@ public class PersonService {
     }
 
     public void delete(int id) throws DemoException {
-        findById(id);
+        findByIdFullPerson(id);
         personRepository.deleteById(id);
         LOGGER.info("PersonService -> DELETE -> delete -> Deleted person with id = {}", id);
     }

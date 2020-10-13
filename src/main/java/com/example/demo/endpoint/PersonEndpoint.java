@@ -31,7 +31,7 @@ public class PersonEndpoint {
     @GetMapping("/{id}")
     @Cacheable("persons")
     public PersonDTO getPersonById(@PathVariable("id") int id) throws DemoException {
-        return personService.findByIdDTO(id);
+        return personService.findById(id);
     }
 
     @GetMapping("/page")
