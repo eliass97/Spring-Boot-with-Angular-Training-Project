@@ -1,0 +1,25 @@
+<div>
+
+    <br>
+    <label>ID:
+        <input [(ngModel)]="input_id" placeholder="Enter ID" />
+    </label>
+    <button (click)="getCountryById()">Search</button>
+
+    <div *ngIf="selectedCountry">
+
+        <span>id: </span>{{selectedCountry.id}}
+        <br>
+        <span>iso: </span>{{selectedCountry.iso}}
+        <br>
+        <span>description: </span>{{selectedCountry.description}}
+        <br>
+        <span>date: </span>{{selectedCountry.lastUpdateDate}}
+
+    </div>
+
+</div>
+
+<div class="container">
+    <button type="button" class="btn btn-primary">Primary</button>
+</div>

@@ -1,0 +1,31 @@
+<div>
+
+  <br>
+  <label>ID:
+    <input [(ngModel)]="input_id" placeholder="Enter ID" />
+  </label>
+  <button (click)="getPersonById()">Search</button>
+
+  <div *ngIf="selectedPerson">
+
+    <span>id: </span>{{selectedPerson.id}}
+    <br>
+    <span>fullName: </span>{{selectedPerson.fullName}}
+    <br>
+    <span>dateOfBirth: </span>{{selectedPerson.dateOfBirth}}
+    <br>
+    <span>sex: </span>{{selectedPerson.sex}}
+    <br>
+    <span>countryOfBirth: </span>{{selectedPerson.countryOfBirth}}
+    <br>
+    <span>countryOfResidence: </span>{{selectedPerson.countryOfResidence}}
+    <br>
+    <span>telephone: </span>{{selectedPerson.telephone}}
+    <br>
+    <span>email: </span>{{selectedPerson.email}}
+    <br>
+    <span>lastUpdateDate: </span>{{selectedPerson.lastUpdateDate}}
+
+  </div>
+
+</div>
