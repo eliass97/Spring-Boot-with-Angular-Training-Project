@@ -1,30 +1,56 @@
-<div>
+<div class="container">
 
   <br>
-  <label>ID:
-    <input [(ngModel)]="input_id" placeholder="Enter ID" />
-  </label>
-  <button (click)="getPersonById()">Search</button>
+  <form class="form-inline justify-content-center">
+    <input class="form-control mr-sm-2" [(ngModel)]="input_id" [ngModelOptions]="{standalone: true}" type="search"
+      placeholder="Search Person" aria-label="Search">
+    <button (click)="getPerson()" class="btn btn-sm btn-secondary">Search</button>
+  </form>
 
+  <br>
   <div *ngIf="selectedPerson">
 
-    <span>id: </span>{{selectedPerson.id}}
+    <div class="d-flex justify-content-center">
+      <div class="column">
+        <div class="row">
+          <span class="col-form-label">ID: {{selectedPerson.id}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Fullname: {{selectedPerson.fullName}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Date Of Birth: {{selectedPerson.dateOfBirth}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Sex: {{selectedPerson.sex}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Country Of Birth: {{selectedPerson.countryOfBirth}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Country Of Residence: {{selectedPerson.countryOfResidence}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Telephone: {{selectedPerson.telephone}}</span>
+        </div>
+        <div class="row">
+          <span class="col-form-label">Email: {{selectedPerson.email}}</span>
+        </div>
+      </div>
+    </div>
+
     <br>
-    <span>fullName: </span>{{selectedPerson.fullName}}
-    <br>
-    <span>dateOfBirth: </span>{{selectedPerson.dateOfBirth}}
-    <br>
-    <span>sex: </span>{{selectedPerson.sex}}
-    <br>
-    <span>countryOfBirth: </span>{{selectedPerson.countryOfBirth}}
-    <br>
-    <span>countryOfResidence: </span>{{selectedPerson.countryOfResidence}}
-    <br>
-    <span>telephone: </span>{{selectedPerson.telephone}}
-    <br>
-    <span>email: </span>{{selectedPerson.email}}
-    <br>
-    <span>lastUpdateDate: </span>{{selectedPerson.lastUpdateDate}}
+    <div class="d-flex justify-content-center">
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn btn-primary"
+            [routerLink]="['/persons/edit/',selectedPerson.id]">Edit</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-primary" (click)="deletePerson()">Delete</button>
+        </div>
+      </div>
+    </div>
 
   </div>
 

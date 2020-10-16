@@ -1,25 +1,41 @@
-<div>
+<div class="container">
 
     <br>
-    <label>ID:
-        <input [(ngModel)]="input_id" placeholder="Enter ID" />
-    </label>
-    <button (click)="getCountryById()">Search</button>
+    <form class="form-inline justify-content-center">
+        <input class="form-control mr-sm-2" [(ngModel)]="input_id" [ngModelOptions]="{standalone: true}" type="search"
+            placeholder="Search Country" aria-label="Search">
+        <button (click)="getCountry()" class="btn btn-sm btn-secondary">Search</button>
+    </form>
 
+    <br>
     <div *ngIf="selectedCountry">
 
-        <span>id: </span>{{selectedCountry.id}}
+        <div class="d-flex justify-content-center">
+            <div class="column">
+                <div class="row">
+                    <span class="col-form-label">ID: {{selectedCountry.id}}</span>
+                </div>
+                <div class="row">
+                    <span class="col-form-label">ISO: {{selectedCountry.iso}}</span>
+                </div>
+                <div class="row">
+                    <span class="col-form-label">Description: {{selectedCountry.description}}</span>
+                </div>
+            </div>
+        </div>
+
         <br>
-        <span>iso: </span>{{selectedCountry.iso}}
-        <br>
-        <span>description: </span>{{selectedCountry.description}}
-        <br>
-        <span>date: </span>{{selectedCountry.lastUpdateDate}}
+        <div class="d-flex justify-content-center">
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-primary" [routerLink]="['/countries/edit/',selectedCountry.id]">Edit</button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" (click)="deleteCountry()">Delete</button>
+                </div>
+            </div>
+        </div>
 
     </div>
 
-</div>
-
-<div class="container">
-    <button type="button" class="btn btn-primary">Primary</button>
 </div>

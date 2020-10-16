@@ -8,12 +8,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { CountryMainComponent } from './country-main/country-main.component';
 import { PersonMainComponent } from './person-main/person-main.component';
+import { CountryEditComponent } from './country-edit/country-edit.component';
+import { PersonEditComponent } from './person-edit/person-edit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CountryMainComponent,
     PersonMainComponent,
+    CountryEditComponent,
+    PersonEditComponent,
   ],
   imports: [
     BrowserModule,
