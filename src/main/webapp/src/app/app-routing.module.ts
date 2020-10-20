@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CountryMainComponent } from './country-main/country-main.component';
-import { PersonMainComponent } from './person-main/person-main.component';
-import { CountryEditComponent } from './country-edit/country-edit.component'
-import { PersonEditComponent } from './person-edit/person-edit.component'
+import { CountryListComponent } from './country-list/country-list.component';
+import { PersonListComponent } from './person-list/person-list.component';
+import { CountryDetailsComponent } from './country-details/country-details.component'
+import { PersonDetailsComponent } from './person-details/person-details.component'
 
 const routes: Routes = [
-  { path: 'countries', component: CountryMainComponent },
-  { path: 'persons', component: PersonMainComponent },
-  { path: 'countries/edit/:id', component: CountryEditComponent },
-  { path: 'persons/edit/:id', component: PersonEditComponent },
+  { path: 'countries', component: CountryListComponent },
+  { path: 'persons', component: PersonListComponent },
+  { path: 'countries/:id', component: CountryDetailsComponent },
+  { path: 'persons/:id', component: PersonDetailsComponent },
 ];
 
 @NgModule({

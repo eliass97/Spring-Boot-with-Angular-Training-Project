@@ -1,6 +1,8 @@
+import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+
 export interface Person {
     id: number;
-    firstName: string;
+    fullName: string;
     dateOfBirth: Date;
     sex: string;
     countryOfBirth: string;

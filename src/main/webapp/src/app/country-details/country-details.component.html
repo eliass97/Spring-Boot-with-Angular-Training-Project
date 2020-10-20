@@ -1,0 +1,71 @@
+<div *ngIf="read_only">
+
+    <div *ngIf="country">
+
+        <div class="d-flex justify-content-center">
+            <div class="column">
+                <div class="row">
+                    <span class="col-form-label">ID: {{country.id}}</span>
+                </div>
+                <div class="row">
+                    <span class="col-form-label">ISO: {{country.iso}}</span>
+                </div>
+                <div class="row">
+                    <span class="col-form-label">Description: {{country.description}}</span>
+                </div>
+                <div class="row">
+                    <span class="col-form-label">Prefix: {{country.prefix}}</span>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+        </div>
+
+    </div>
+
+</div>
+
+<div *ngIf="!read_only">
+
+    <div *ngIf="country_edit">
+
+        <div class="d-flex justify-content-center">
+            <div class="column">
+                <div class="row input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">ISO</span>
+                    <input [(ngModel)]="country_edit.iso" type="text" class="form-control" value="{{country_edit.iso}}"
+                        placeholder="ISO" aria-label="ISO" aria-describedby="basic-addon1">
+                </div>
+                <div class="row input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Description</span>
+                    <input [(ngModel)]="country_edit.description" type="text" class="form-control"
+                        value="{{country_edit.description}}" placeholder="Description" aria-label="Description"
+                        aria-describedby="basic-addon1">
+                </div>
+                <div class="row input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Prefix</span>
+                    <input [(ngModel)]="country_edit.prefix" type="text" class="form-control"
+                        value="{{country_edit.prefix}}" placeholder="Prefix" aria-label="Prefix"
+                        aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <div class="d-flex justify-content-center">
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-primary" (click)="cancelEdit()">Cancel</button>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-primary" (click)="saveEdit()">Save</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>

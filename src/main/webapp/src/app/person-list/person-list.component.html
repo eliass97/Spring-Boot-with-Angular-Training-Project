@@ -1,0 +1,54 @@
+<div class="container">
+
+    <br>
+
+    <div class="row d-flex justify-content-center">
+
+        <table class="table table-sm table-dark">
+            <thead>
+                <th>Name</th>
+                <th colspan="2">Actions</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let person of persons">
+                    <td>
+                        <a class="nav-link col-form-label-lg" [routerLink]="['/persons/', person.id]"
+                            [state]="{id: person.id, read_only: true}">{{person.fullName}}</a>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" [routerLink]="['/persons/', person.id]"
+                            [state]="{id: person.id, read_only: false}">Edit</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-primary" (click)="deletePerson(person.id)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <br>
+
+    <div class="row d-flex justify-content-center">
+
+        <ngb-pagination [collectionSize]="totalPersons" [pageSize]="pageSize" [(page)]="page"
+            aria-label="Default pagination" [maxSize]=5 (pageChange)="refreshPage()">
+        </ngb-pagination>
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Page Size: {{pageSize}}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a (click)="changePageSize(5)" class="dropdown-item">5</a>
+                <a (click)="changePageSize(10)" class="dropdown-item">10</a>
+                <a (click)="changePageSize(20)" class="dropdown-item">20</a>
+                <a (click)="changePageSize(50)" class="dropdown-item">50</a>
+                <a (click)="changePageSize(100)" class="dropdown-item">100</a>
+            </div>
+        </div>
+
+    </div>
+
+</div>

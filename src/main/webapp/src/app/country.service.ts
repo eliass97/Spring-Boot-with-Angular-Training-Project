@@ -1,26 +1,34 @@
 import { Injectable } from '@angular/core';
 import { Country } from './country';
-import { Observable, of } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CountryService {
 
-  private apiURL = 'http://localhost:8080/country';
+  private apiURL = '/country';
 
   constructor(private httpclient: HttpClient) { }
+
+  getCountries(): Observable<Country[]> {
+    return this.httpclient.get<Country[]>(this.apiURL);
+  }
 
   getCountryById(id: number): Observable<Country> {
     const url = `${this.apiURL}/${id}`;
     return this.httpclient.get<Country>(url);
-
   }
 
-  public putCountryById(country: Country): Observable<Country> {
-    const url = `${this.apiURL}/${country.id}`;
+  putCountryById(id: number, country: Country): Observable<Country> {
+    const url = `${this.apiURL}/${id}`;
     return this.httpclient.put<Country>(url, country);
+  }
+
+  getCountriesByPage(page: number, pageSize: number): Observable<Country[]> {
+    const url = `${this.apiURL}/page?page=${page}&size=${pageSize}`;
+    return this.httpclient.get<Country[]>(url);
   }
 
   deleteCountryById(id: number): void {
