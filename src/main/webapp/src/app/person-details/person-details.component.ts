@@ -1,42 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbDate, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Country } from '../country';
 import { CountryService } from '../country.service';
 import { Person } from '../person';
 import { PersonService } from '../person.service';
+import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-person-details',
   templateUrl: './person-details.component.html',
-  styleUrls: ['./person-details.component.css']
+  styleUrls: ['./person-details.component.css'],
+  providers: []
 })
 export class PersonDetailsComponent implements OnInit {
 
   person_view: Person;
   read_only: boolean;
   person_edit: Person;
-  countries: Country[] = [];
-  person_viewBirthCountryDescription: string;
-  person_viewResidenceCountryDescription: string;
-  person_editBirthCountryDescription: string;
-  person_editResidenceCountryDescription: string;
-  date_picker: NgbDateStruct;
+  countries: Country[];
 
-  constructor(private personService: PersonService, private countryService: CountryService, private activatedRoute: ActivatedRoute, private router: Router) {
+  constructor(private personService: PersonService, private countryService: CountryService, private activatedRoute: ActivatedRoute, private router: Router, private customAdapter: NgbDateAdapter<Date>) {
     personService.getPersonById(history.state.id).subscribe(retrievedPerson => {
       this.person_view = retrievedPerson
-      this.person_view.dateOfBirth = new Date(this.person_view.dateOfBirth);
-      //REMEMBER: IN DATE MONTHS START COUNTING FROM 0
+      this.setDates();
       this.person_edit = Object.assign({}, this.person_view);
-      this.date_picker = new NgbDate(this.person_view.dateOfBirth.getUTCFullYear(), this.person_view.dateOfBirth.getUTCMonth() + 1, this.person_view.dateOfBirth.getUTCDate());
     });
     this.countryService.getCountries().subscribe(retrievedCountries => {
       this.countries = retrievedCountries;
-      this.person_viewBirthCountryDescription = this.findDescriptionByISO(this.person_view.countryOfBirth);
-      this.person_viewResidenceCountryDescription = this.findDescriptionByISO(this.person_view.countryOfResidence);
-      this.person_editBirthCountryDescription = this.findDescriptionByISO(this.person_edit.countryOfBirth);
-      this.person_editResidenceCountryDescription = this.findDescriptionByISO(this.person_edit.countryOfResidence);
     });
     this.read_only = history.state.read_only;
   }
@@ -45,41 +35,51 @@ export class PersonDetailsComponent implements OnInit {
 
   }
 
-  showDateOfBirth(): string {
-    return this.person_view.dateOfBirth.toLocaleDateString();
+  //This method is required only because most dates of birth in the database are undefined
+  setDates() {
+    if (this.person_view.dateOfBirth == undefined) {
+      this.person_view.dateOfBirth = null;
+    } else {
+      this.person_view.dateOfBirth = new Date(this.person_view.dateOfBirth);
+    }
+  }
+
+  showDateInFormatting(date: Date): string {
+    if (date != null) {
+      return date.toLocaleDateString('en-GB', { timeZone: 'UTC' });
+    } else {
+      return "A/N";
+    }
   }
 
   findDescriptionByISO(iso: string) {
-    return this.countries.filter(x => x.iso == iso).pop().description;
+    if (this.countries != undefined) {
+      return this.countries.filter(x => x.iso == iso).pop().description;
+    }
+    return null;
   }
 
-  editCountryOfBirthISO(iso: string): void {
+  editCountryOfBirth(iso: string): void {
     this.person_edit.countryOfBirth = iso;
-    this.person_editBirthCountryDescription = this.findDescriptionByISO(iso);
   }
 
-  editCountryOfResidenceISO(iso: string): void {
+  editCountryOfResidence(iso: string): void {
     this.person_edit.countryOfResidence = iso;
-    this.person_editResidenceCountryDescription = this.findDescriptionByISO(iso);
   }
 
-  saveEdit(): void {
-    this.person_edit.dateOfBirth = new Date(this.date_picker.year, this.date_picker.month - 1, this.date_picker.day + 1);
+  saveButton(): void {
     this.personService.putPersonById(this.person_view.id, this.person_edit).subscribe(retrievedPerson => {
       this.person_view = retrievedPerson;
-      this.person_view.dateOfBirth = new Date(this.person_view.dateOfBirth);
-      this.date_picker = new NgbDate(this.person_view.dateOfBirth.getUTCFullYear(), this.person_view.dateOfBirth.getUTCMonth() + 1, this.person_view.dateOfBirth.getUTCDate());
-      this.person_viewBirthCountryDescription = this.findDescriptionByISO(this.person_view.countryOfBirth);
-      this.person_viewResidenceCountryDescription = this.findDescriptionByISO(this.person_view.countryOfResidence);
-      this.read_only = true;
+      this.setDates();
     });
+    this.read_only = true;
   }
 
-  cancelEdit(): void {
-    this.goBack();
+  cancelButton(): void {
+    this.backButton();
   }
 
-  goBack(): void {
+  backButton(): void {
     this.router.navigate(['/persons']);
   }
 }

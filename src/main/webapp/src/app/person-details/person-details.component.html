@@ -11,17 +11,18 @@
                     <span class="col-form-label">Fullname: {{person_view.fullName}}</span>
                 </div>
                 <div class="row">
-                    <span class="col-form-label">Date Of Birth: {{showDateOfBirth()}}</span>
+                    <span class="col-form-label">Date Of Birth: {{showDateInFormatting(person_view.dateOfBirth)}}</span>
                 </div>
                 <div class="row">
                     <span class="col-form-label">Sex: {{person_view.sex}}</span>
                 </div>
                 <div class="row">
-                    <span class="col-form-label">Country Of Birth: {{person_viewBirthCountryDescription}}</span>
+                    <span class="col-form-label">Country Of Birth:
+                        {{findDescriptionByISO(person_view.countryOfBirth)}}</span>
                 </div>
                 <div class="row">
                     <span class="col-form-label">Country Of Residence:
-                        {{person_viewResidenceCountryDescription}}</span>
+                        {{findDescriptionByISO(person_view.countryOfResidence)}}</span>
                 </div>
                 <div class="row">
                     <span class="col-form-label">Telephone: {{person_view.telephone}}</span>
@@ -34,7 +35,7 @@
 
         <br>
         <div class="d-flex justify-content-center">
-            <button type="button" class="btn btn-primary" (click)="goBack()">Back</button>
+            <button type="button" class="btn btn-primary" (click)="backButton()">Back</button>
         </div>
 
     </div>
@@ -46,7 +47,7 @@
     <div *ngIf="person_edit">
 
         <div class="d-flex justify-content-center">
-            <div class="column">
+            <div class="col col-lg-4">
                 <div class="row input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Fullname</span>
                     <input [(ngModel)]="person_edit.fullName" type="text" class="form-control"
@@ -55,9 +56,18 @@
                 </div>
                 <div class="row input-group mb-3">
                     <span class="input-group-text" id="basic-addon2">Date Of Birth</span>
-                    <input type="text" ngbDatepicker [(ngModel)]="date_picker" [startDate]="date_picker"
-                        placeholder="Date Of Birth" #d="ngbDatepicker" />
-                    <button (click)="d.toggle()">Toggle</button>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input class="form-control" placeholder="Date Of Birth" name="dp"
+                                    [startDate]="person_edit.dateOfBirth" [(ngModel)]="person_edit.dateOfBirth"
+                                    [minDate]="{year: 1900, month: 1, day: 1}" ngbDatepicker #d="ngbDatepicker">
+                                <div class="input-group-append">
+                                    <button type="button" (click)="d.toggle()">Pick Date</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="row input-group mb-3">
                     <span class="input-group-text" id="basic-addon3">Sex</span>
@@ -69,11 +79,11 @@
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonBirth"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{person_editBirthCountryDescription}}
+                            {{findDescriptionByISO(person_edit.countryOfBirth)}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a *ngFor="let country of countries" class="dropdown-item"
-                                (click)="editCountryOfBirthISO(country.iso)">{{country.description}}</a>
+                                (click)="editCountryOfBirth(country.iso)">{{country.description}}</a>
                         </div>
                     </div>
                 </div>
@@ -82,11 +92,11 @@
                     <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonResidence"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {{person_editResidenceCountryDescription}}
+                            {{findDescriptionByISO(person_edit.countryOfResidence)}}
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a *ngFor="let country of countries" class="dropdown-item"
-                                (click)="editCountryOfResidenceISO(country.iso)">{{country.description}}</a>
+                                (click)="editCountryOfResidence(country.iso)">{{country.description}}</a>
                         </div>
                     </div>
                 </div>
@@ -109,10 +119,10 @@
         <div class="d-flex justify-content-center">
             <div class="row">
                 <div class="col">
-                    <button type="button" class="btn btn-primary" (click)="cancelEdit()">Cancel</button>
+                    <button type="button" class="btn btn-primary" (click)="cancelButton()">Cancel</button>
                 </div>
                 <div class="col">
-                    <button type="button" class="btn btn-primary" (click)="saveEdit()">Save</button>
+                    <button type="button" class="btn btn-primary" (click)="saveButton()">Save</button>
                 </div>
             </div>
         </div>
