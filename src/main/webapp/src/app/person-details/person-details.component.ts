@@ -15,12 +15,12 @@ import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 export class PersonDetailsComponent implements OnInit {
 
   person_view: Person;
-  read_only: boolean;
+  read_only: boolean = true;
   person_edit: Person;
   countries: Country[];
 
   constructor(private personService: PersonService, private countryService: CountryService, private activatedRoute: ActivatedRoute, private router: Router, private customAdapter: NgbDateAdapter<Date>) {
-    personService.getPersonById(history.state.id).subscribe(retrievedPerson => {
+    personService.getPersonById(Number(this.activatedRoute.snapshot.paramMap.get('id'))).subscribe(retrievedPerson => {
       this.person_view = retrievedPerson
       this.setDates();
       this.person_edit = Object.assign({}, this.person_view);
@@ -28,7 +28,9 @@ export class PersonDetailsComponent implements OnInit {
     this.countryService.getCountries().subscribe(retrievedCountries => {
       this.countries = retrievedCountries;
     });
-    this.read_only = history.state.read_only;
+    if (history.state.read_only != undefined) {
+      this.read_only = history.state.read_only;
+    }
   }
 
   ngOnInit(): void {

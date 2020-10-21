@@ -31,8 +31,8 @@ export class CountryService {
     return this.httpclient.get<Country[]>(url);
   }
 
-  deleteCountryById(id: number): void {
+  async deleteCountryById(id: number) {
     const url = `${this.apiURL}/${id}`;
-    this.httpclient.delete(url).subscribe(data => console.log(data));
+    this.httpclient.delete(url).subscribe();
   }
 }

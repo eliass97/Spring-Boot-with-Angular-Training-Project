@@ -28,8 +28,8 @@ export class PersonService {
     return this.httpclient.get<Person[]>(url);
   }
 
-  deletePersonById(id: number): void {
+  async deletePersonById(id: number) {
     const url = `${this.apiURL}/${id}`;
-    this.httpclient.delete(url).subscribe(data => console.log(data));
+    this.httpclient.delete(url).subscribe();
   }
 }

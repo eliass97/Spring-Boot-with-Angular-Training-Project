@@ -17,45 +17,45 @@ import java.util.List;
 @RequestMapping(value = "/country")
 public class CountryEndpoint {
 
-    private final CountryService countryService;
+  private final CountryService countryService;
 
-    public CountryEndpoint(CountryService countryService) {
-        this.countryService = countryService;
-    }
+  public CountryEndpoint(CountryService countryService) {
+    this.countryService = countryService;
+  }
 
-    @GetMapping
-    public List<Country> getAllCountries() {
-        return countryService.findAll();
-    }
+  @GetMapping
+  public List<Country> getAllCountries() {
+    return countryService.findAll();
+  }
 
-    @GetMapping("/{id}")
-    @Cacheable("countries")
-    public Country getCountryById(@PathVariable("id") int id) throws DemoException {
-        return countryService.findById(id);
-    }
+  @GetMapping("/{id}")
+  @Cacheable("countries")
+  public Country getCountryById(@PathVariable("id") int id) throws DemoException {
+    return countryService.findById(id);
+  }
 
-    @GetMapping("/page")
-    public Page<Country> getCountriesByPage(Pageable pageableRequest) {
-        return countryService.findCountriesByPage(pageableRequest);
-    }
+  @GetMapping("/page")
+  public Page<Country> getCountriesByPage(Pageable pageableRequest) {
+    return countryService.findCountriesByPage(pageableRequest);
+  }
 
-    @PostMapping
-    @CachePut(value = "countries", key = "#newCountry.id")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Country createCountry(@RequestBody Country newCountry) throws DemoException {
-        return countryService.create(newCountry);
-    }
+  @PostMapping
+  @CachePut(value = "countries", key = "#newCountry.id")
+  @ResponseStatus(HttpStatus.CREATED)
+  public Country createCountry(@RequestBody Country newCountry) throws DemoException {
+    return countryService.create(newCountry);
+  }
 
-    @PutMapping("/{id}")
-    @CacheEvict(value = "countries", key = "#id")
-    public Country updateCountry(@PathVariable("id") int id, @RequestBody Country updatedCountry) throws DemoException {
-        return countryService.update(id, updatedCountry);
-    }
+  @PutMapping("/{id}")
+  @CacheEvict(value = "countries", key = "#id")
+  public Country updateCountry(@PathVariable("id") int id, @RequestBody Country updatedCountry) throws DemoException {
+    return countryService.update(id, updatedCountry);
+  }
 
-    @DeleteMapping("/{id}")
-    @CacheEvict(value = "countries", key = "#id")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCountry(@PathVariable("id") int id) throws DemoException {
-        countryService.delete(id);
-    }
+  @DeleteMapping("/{id}")
+  @CacheEvict(value = "countries", key = "#id")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteCountry(@PathVariable("id") int id) throws DemoException {
+    countryService.delete(id);
+  }
 }

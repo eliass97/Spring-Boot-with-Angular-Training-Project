@@ -11,15 +11,17 @@ import { CountryService } from '../country.service';
 export class CountryDetailsComponent implements OnInit {
 
   country: Country;
-  read_only: boolean;
+  read_only: boolean = true;
   country_edit: Country;
 
   constructor(private countryService: CountryService, private activatedRoute: ActivatedRoute, private router: Router) {
-    this.countryService.getCountryById(history.state.id).subscribe(retrievedCountry => {
+    this.countryService.getCountryById(Number(this.activatedRoute.snapshot.paramMap.get('id'))).subscribe(retrievedCountry => {
       this.country = retrievedCountry;
       this.country_edit = Object.assign({}, this.country);
     });
-    this.read_only = history.state.read_only;
+    if (history.state.read_only != undefined) {
+      this.read_only = history.state.read_only;
+    }
   }
 
   ngOnInit(): void {

@@ -22,8 +22,7 @@ export class PersonListComponent implements OnInit {
 
   deletePerson(id: number) {
     if (confirm("Are you sure you want to delete it?")) {
-      this.personService.deletePersonById(id);
-      this.refreshPage();
+      this.personService.deletePersonById(id).then(res => this.refreshPage());
     }
   }
 

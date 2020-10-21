@@ -20,10 +20,9 @@ export class CountryListComponent implements OnInit {
     this.refreshPage();
   }
 
-  deleteCountry(id: number) {
+  deleteCountry(id: number): void {
     if (confirm("Are you sure you want to delete it?")) {
-      this.countryService.deleteCountryById(id);
-      this.refreshPage();
+      this.countryService.deleteCountryById(id).then(res => this.refreshPage());
     }
   }
 
