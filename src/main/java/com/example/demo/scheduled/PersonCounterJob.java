@@ -13,27 +13,25 @@ import java.time.LocalDateTime;
 @DisallowConcurrentExecution
 public class PersonCounterJob extends QuartzScheduledJob {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersonCounterJob.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PersonCounterJob.class);
+  private final PersonService personService;
+  private final String JOB_NAME = "personCounterJob";
+  private final String CRON_EXPRESSION = "0 0/10 * * * ?";
 
-    private final PersonService personService;
+  public PersonCounterJob(PersonService personService) {
+    this.personService = personService;
+  }
 
-    private final String JOB_NAME = "personCounterJob";
-    private final String CRON_EXPRESSION = "0 0/10 * * * ?";
+  @Override
+  public void executeInternal(JobExecutionContext jec) {
+    LOGGER.info("{} : Recorded number of persons : {}", LocalDateTime.now(), personService.getNumberOfPersons());
+  }
 
-    public PersonCounterJob(PersonService personService) {
-        this.personService = personService;
-    }
+  public String getJobName() {
+    return JOB_NAME;
+  }
 
-    @Override
-    public void executeInternal(JobExecutionContext jec) {
-        LOGGER.info("{} : Recorded number of persons : {}", LocalDateTime.now(), personService.getNumberOfPersons());
-    }
-
-    public String getJobName() {
-        return JOB_NAME;
-    }
-
-    public String triggerCron() {
-        return CRON_EXPRESSION;
-    }
+  public String triggerCron() {
+    return CRON_EXPRESSION;
+  }
 }
