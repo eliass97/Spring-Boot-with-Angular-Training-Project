@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PersonService {
 
-  private apiURL = '/person';
+  private apiURL = '/api/persons';
 
   constructor(private httpclient: HttpClient) { }
 

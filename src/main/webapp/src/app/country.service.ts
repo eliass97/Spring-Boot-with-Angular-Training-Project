@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CountryService {
 
-  private apiURL = '/country';
+  private apiURL = '/api/countries';
 
   constructor(private httpclient: HttpClient) { }
 
