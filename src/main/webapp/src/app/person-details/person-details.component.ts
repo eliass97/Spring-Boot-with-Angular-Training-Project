@@ -69,7 +69,7 @@ export class PersonDetailsComponent implements OnInit {
     this.person_edit.countryOfResidence = iso;
   }
 
-  saveButton(): void {
+  save(): void {
     this.personService.putPersonById(this.person_view.id, this.person_edit).subscribe(retrievedPerson => {
       this.person_view = retrievedPerson;
       this.setDates();
@@ -77,11 +77,11 @@ export class PersonDetailsComponent implements OnInit {
     this.read_only = true;
   }
 
-  cancelButton(): void {
-    this.backButton();
+  cancel(): void {
+    this.back();
   }
 
-  backButton(): void {
+  back(): void {
     this.router.navigate(['/persons']);
   }
 }

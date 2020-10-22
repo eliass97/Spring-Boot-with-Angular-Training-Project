@@ -28,18 +28,18 @@ export class CountryDetailsComponent implements OnInit {
 
   }
 
-  saveEdit(): void {
+  save(): void {
     this.countryService.putCountryById(this.country.id, this.country_edit).subscribe(retrievedCountry => {
       this.country = retrievedCountry;
       this.read_only = true;
     });
   }
 
-  cancelEdit(): void {
-    this.goBack();
+  cancel(): void {
+    this.back();
   }
 
-  goBack(): void {
+  back(): void {
     this.router.navigate(['/countries']);
   }
 

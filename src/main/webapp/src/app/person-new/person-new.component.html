@@ -1,0 +1,77 @@
+<div class="d-flex justify-content-center">
+    <div class="col col-lg-4">
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Fullname</span>
+            <input [(ngModel)]="person.fullName" type="text" class="form-control" placeholder="Fullname"
+                aria-label="Fullname" aria-describedby="basic-addon1">
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon2">Date Of Birth</span>
+            <form class="form-inline">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Date Of Birth" name="dp"
+                            [(ngModel)]="person.dateOfBirth" [minDate]="{year: 1900, month: 1, day: 1}" ngbDatepicker
+                            #d="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button type="button" (click)="d.toggle()">Pick Date</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">Sex</span>
+            <input [(ngModel)]="person.sex" type="text" class="form-control" placeholder="Sex" aria-label="Sex"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon4">Country Of Birth</span>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonBirth"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{findDescriptionByISO(person.countryOfBirth)}}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a *ngFor="let country of countries" class="dropdown-item"
+                        (click)="editCountryOfBirth(country.iso)">{{country.description}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon5">Country Of Residence</span>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonResidence"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{findDescriptionByISO(person.countryOfResidence)}}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a *ngFor="let country of countries" class="dropdown-item"
+                        (click)="editCountryOfResidence(country.iso)">{{country.description}}</a>
+                </div>
+            </div>
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon6">Email</span>
+            <input [(ngModel)]="person.email" type="text" class="form-control" placeholder="Email" aria-label="Email"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon7">Telephone</span>
+            <input [(ngModel)]="person.telephone" type="text" class="form-control" placeholder="Telephone"
+                aria-label="Telephone" aria-describedby="basic-addon1">
+        </div>
+    </div>
+</div>
+
+<br>
+<div class="d-flex justify-content-center">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" (click)="create()">Save</button>
+        </div>
+    </div>
+</div>

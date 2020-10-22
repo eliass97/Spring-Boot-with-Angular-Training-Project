@@ -13,6 +13,8 @@ import { CountryDetailsComponent } from './country-details/country-details.compo
 import { CountryListComponent } from './country-list/country-list.component';
 import { PersonListComponent } from './person-list/person-list.component';
 import { PersonDetailsComponent } from './person-details/person-details.component';
+import { PersonNewComponent } from './person-new/person-new.component';
+import { CountryNewComponent } from './country-new/country-new.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { PersonDetailsComponent } from './person-details/person-details.componen
     CountryListComponent,
     PersonListComponent,
     PersonDetailsComponent,
+    PersonNewComponent,
+    CountryNewComponent,
   ],
   imports: [
     BrowserModule,

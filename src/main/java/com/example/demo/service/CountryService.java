@@ -48,7 +48,7 @@ public class CountryService {
 
     public Country create(Country newCountry) throws DemoException {
         if (isoExistsInDatabase(newCountry.getIso())) {
-            LOGGER.error("CountryService -> PUT -> updateChecks -> BadRequestException -> Provided iso = {} already exists in the database", newCountry.getIso());
+            LOGGER.error("CountryService -> POST -> create -> BadRequestException -> Provided iso = {} already exists in the database", newCountry.getIso());
             throw new BadRequestException("Provided iso already exists in the database");
         }
         Country createdCountry = countryRepository.save(newCountry);
@@ -67,7 +67,7 @@ public class CountryService {
 
     private void updateChecks(int pathId, Country updatedCountry) throws DemoException {
         if (updatedCountry.getId() != pathId && updatedCountry.getId() != 0) {
-            LOGGER.error("CountryService -> PUT -> basicUpdateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedCountry.getId());
+            LOGGER.error("CountryService -> PUT -> updateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedCountry.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         if (isoExistsInDatabase(updatedCountry.getIso()) && getCountryByIso(updatedCountry.getIso()).getId() != pathId) {
@@ -86,7 +86,7 @@ public class CountryService {
     public void delete(int id) throws DemoException {
         findById(id);
         countryRepository.deleteById(id);
-        LOGGER.info("CountryService -> POST -> delete -> Deleted country with id = {}", id);
+        LOGGER.info("CountryService -> DELETE -> delete -> Deleted country with id = {}", id);
     }
 
     private boolean isoExistsInDatabase(String iso) {

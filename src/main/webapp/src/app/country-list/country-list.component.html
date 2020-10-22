@@ -4,6 +4,8 @@
 
     <div class="row d-flex justify-content-center">
 
+        <button type="button" class="btn btn-primary" [routerLink]="['/country_new']">Add New Country</button>
+
         <table class="table table-sm table-dark">
             <thead>
                 <th>Name</th>
@@ -31,6 +33,18 @@
     <br>
 
     <div class="row d-flex justify-content-center">
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By: {{sortByField}}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a (click)="changeSortByField('iso')" class="dropdown-item">ISO</a>
+                <a (click)="changeSortByField('description')" class="dropdown-item">Description</a>
+                <a (click)="changeSortByField('prefix')" class="dropdown-item">Prefix</a>
+            </div>
+        </div>
 
         <ngb-pagination [collectionSize]="totalCountries" [pageSize]="pageSize" [(page)]="page"
             aria-label="Default pagination" [maxSize]=5 (pageChange)="refreshPage()">

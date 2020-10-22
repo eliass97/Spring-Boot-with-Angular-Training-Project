@@ -11,6 +11,7 @@ export class CountryListComponent implements OnInit {
 
   page: number = 1;
   pageSize: number = 10;
+  sortByField: string = "id";
   countries: Country[] = [];
   totalCountries: number;
 
@@ -27,7 +28,7 @@ export class CountryListComponent implements OnInit {
   }
 
   refreshPage(): void {
-    this.countryService.getCountriesByPage(this.page - 1, this.pageSize).subscribe(retrievedCountries => {
+    this.countryService.getCountriesByPageSortedByField(this.page - 1, this.pageSize, this.sortByField).subscribe(retrievedCountries => {
       this.countries = retrievedCountries['content'];
       this.totalCountries = retrievedCountries['totalElements'];
     });
@@ -35,6 +36,11 @@ export class CountryListComponent implements OnInit {
 
   changePageSize(size: number): void {
     this.pageSize = size;
+    this.refreshPage();
+  }
+
+  changeSortByField(field: string): void {
+    this.sortByField = field;
     this.refreshPage();
   }
 

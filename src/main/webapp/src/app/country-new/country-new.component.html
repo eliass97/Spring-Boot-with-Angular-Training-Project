@@ -1,0 +1,31 @@
+<div class="d-flex justify-content-center">
+    <div class="column">
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">ISO</span>
+            <input [(ngModel)]="country.iso" type="text" class="form-control" placeholder="ISO" aria-label="ISO"
+                aria-describedby="basic-addon1">
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Description</span>
+            <input [(ngModel)]="country.description" type="text" class="form-control" placeholder="Description"
+                aria-label="Description" aria-describedby="basic-addon1">
+        </div>
+        <div class="row input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Prefix</span>
+            <input [(ngModel)]="country.prefix" type="text" class="form-control" placeholder="Prefix"
+                aria-label="Prefix" aria-describedby="basic-addon1">
+        </div>
+    </div>
+</div>
+
+<br>
+<div class="d-flex justify-content-center">
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" (click)="create()">Create</button>
+        </div>
+    </div>
+</div>

@@ -80,11 +80,11 @@ public class PersonService {
 
     private void updateChecks(int pathId, PersonDTO updatedPersonDTO) throws DemoException {
         if (updatedPersonDTO.getId() != pathId && updatedPersonDTO.getId() != 0) {
-            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedPersonDTO.getId());
+            LOGGER.error("PersonService -> updateChecks -> BadRequestException -> path_id = {} and body_id = {} do not match", pathId, updatedPersonDTO.getId());
             throw new BadRequestException("Path ID variable does not match with body ID");
         }
         if (updatedPersonDTO.getCountryOfBirth() == null || updatedPersonDTO.getCountryOfResidence() == null) {
-            LOGGER.error("PersonService -> basicUpdateChecks -> BadRequestException -> Country ISO not provided");
+            LOGGER.error("PersonService -> updateChecks -> BadRequestException -> Country ISO not provided");
             throw new BadRequestException("Country ISO not provided");
         }
     }

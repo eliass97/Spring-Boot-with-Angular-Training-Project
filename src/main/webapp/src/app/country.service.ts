@@ -21,14 +21,23 @@ export class CountryService {
     return this.httpclient.get<Country>(url);
   }
 
-  putCountryById(id: number, country: Country): Observable<Country> {
-    const url = `${this.apiURL}/${id}`;
-    return this.httpclient.put<Country>(url, country);
-  }
-
   getCountriesByPage(page: number, pageSize: number): Observable<Country[]> {
     const url = `${this.apiURL}/page?page=${page}&size=${pageSize}`;
     return this.httpclient.get<Country[]>(url);
+  }
+
+  getCountriesByPageSortedByField(page: number, pageSize: number, field: string): Observable<Country[]> {
+    const url = `${this.apiURL}/page?page=${page}&size=${pageSize}&sort=${field},asc`;
+    return this.httpclient.get<Country[]>(url);
+  }
+
+  postCountry(country: Country): Observable<Country> {
+    return this.httpclient.post<Country>(this.apiURL, country);
+  }
+
+  putCountryById(id: number, country: Country): Observable<Country> {
+    const url = `${this.apiURL}/${id}`;
+    return this.httpclient.put<Country>(url, country);
   }
 
   async deleteCountryById(id: number) {
