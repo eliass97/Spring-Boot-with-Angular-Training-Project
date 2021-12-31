@@ -1,4 +1,8 @@
-# Webapp
+# Spring Boot with Angular
+
+Training project implemented during my first year in work that combined Spring Boot with Angular
+
+## Webapp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.6.
 
